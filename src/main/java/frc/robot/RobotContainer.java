@@ -10,6 +10,9 @@ import frc.robot.util.DriverController;
 
 import java.util.Arrays;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +38,20 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    /***** apriltag transformation stuff
+     * the idea is that, when apriltags are out of the camera, use the odometry feedback from the 
+     * drivetrain as data to estimate where the apriltag is
+     */
+    Pose2d oldAprTagPose = new Pose2d(3, 0, Rotation2d.fromDegrees(180)); 
+    Pose2d oldOdo = new Pose2d(0, 0, new Rotation2d()); 
+    Pose2d newOdo = new Pose2d(0, -4, Rotation2d.fromDegrees(57)); 
+
+    Pose2d oldFieldRelative = oldOdo.transformBy(new Transform2d(new Pose2d(), oldAprTagPose)); 
+    Pose2d rel2 = oldFieldRelative.relativeTo(newOdo); 
+
+    Pose2d res = rel2; 
+    System.out.println(res);
     // driverController.setChassisSpeedsSupplier(drivetrain::getChassisSpeeds); // comment in simulation
     drivetrain.setDefaultCommand(new RunCommand(() -> {
       ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 

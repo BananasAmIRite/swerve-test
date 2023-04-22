@@ -4,6 +4,8 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -53,6 +55,12 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void swerveDrive(ChassisSpeeds speeds) {
+    Pose2d target = new Pose2d(speeds.vxMetersPerSecond * Constants.kLoopDuration, speeds.vyMetersPerSecond * Constants.kLoopDuration, Rotation2d.fromRadians(speeds.omegaRadiansPerSecond * Constants.kLoopDuration));
+
+    Twist2d twist = new Pose2d().log(target); 
+
+    speeds = new ChassisSpeeds(twist.dx * Constants.kLoopDuration, twist.dy * Constants.kLoopDuration, twist.dtheta * Constants.kLoopDuration); 
+
     SwerveModuleState[] states = Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
         speeds, 
         gyro.getRotation2d()

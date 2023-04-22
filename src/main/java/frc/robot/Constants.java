@@ -23,6 +23,8 @@ import frc.robot.trajectory.TrajectoryCreator;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static final double kLoopDuration = 0.02; 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
