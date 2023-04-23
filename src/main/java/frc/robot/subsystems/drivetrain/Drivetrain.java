@@ -17,10 +17,10 @@ import frc.robot.subsystems.drivetrain.SwerveModule.DriveState;
 
 public class Drivetrain extends SubsystemBase {
 
-  private SwerveModule frontLeft = new SwerveModule(Constants.DrivetrainConstants.FrontLeft.kRotate, Constants.DrivetrainConstants.FrontLeft.kDrive); 
-  private SwerveModule frontRight = new SwerveModule(Constants.DrivetrainConstants.FrontRight.kRotate, Constants.DrivetrainConstants.FrontRight.kDrive); 
-  private SwerveModule backLeft = new SwerveModule(Constants.DrivetrainConstants.BackLeft.kRotate, Constants.DrivetrainConstants.BackLeft.kDrive); 
-  private SwerveModule backRight = new SwerveModule(Constants.DrivetrainConstants.BackRight.kRotate, Constants.DrivetrainConstants.BackRight.kDrive); 
+  private SwerveModule frontLeft = new SwerveModule(Constants.DrivetrainConstants.FrontLeft.kRotate, Constants.DrivetrainConstants.FrontLeft.kDrive, Constants.DrivetrainConstants.FrontLeft.kRotEncoder); 
+  private SwerveModule frontRight = new SwerveModule(Constants.DrivetrainConstants.FrontRight.kRotate, Constants.DrivetrainConstants.FrontRight.kDrive, Constants.DrivetrainConstants.FrontRight.kRotEncoder); 
+  private SwerveModule backLeft = new SwerveModule(Constants.DrivetrainConstants.BackLeft.kRotate, Constants.DrivetrainConstants.BackLeft.kDrive, Constants.DrivetrainConstants.BackLeft.kRotEncoder); 
+  private SwerveModule backRight = new SwerveModule(Constants.DrivetrainConstants.BackRight.kRotate, Constants.DrivetrainConstants.BackRight.kDrive, Constants.DrivetrainConstants.BackRight.kRotEncoder); 
 
   private SwerveDrivePoseEstimator odometry; 
 

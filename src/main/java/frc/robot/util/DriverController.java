@@ -2,7 +2,6 @@ package frc.robot.util;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;

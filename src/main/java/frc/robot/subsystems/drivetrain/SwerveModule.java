@@ -1,13 +1,12 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -27,7 +26,9 @@ public class SwerveModule {
     private SparkMaxPIDController drivePIDController; 
 
     // represents the true, uninverted heading of the drive motor
-    private AbsoluteEncoder turnEncoder; 
+    private CANCoder absoluteTurnEncoder;
+    
+    private RelativeEncoder turnEncoder; 
 
     private RelativeEncoder driveEncoder; 
 
@@ -38,11 +39,12 @@ public class SwerveModule {
         Constants.DrivetrainConstants.kaVoltSecondsSquaredPerMeter
     ); 
 
-    public SwerveModule(int kTurn, int kDrive) {
+    public SwerveModule(int kTurn, int kDrive, int kTurnEncoder) {
         this.turnMotor = new CANSparkMax(kTurn, MotorType.kBrushless); 
         this.driveMotor = new CANSparkMax(kDrive, MotorType.kBrushless); 
 
-        this.turnEncoder = this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
+        this.absoluteTurnEncoder = new CANCoder(kTurnEncoder); // this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
+        this.turnEncoder = this.turnMotor.getEncoder(); 
         this.driveEncoder = this.driveMotor.getEncoder(); 
 
         this.turnPIDController = this.turnMotor.getPIDController(); 
@@ -70,6 +72,8 @@ public class SwerveModule {
     private void configureEncoders() {
         this.turnEncoder.setPositionConversionFactor(Constants.DrivetrainConstants.kDegreesPerRot); 
         this.turnEncoder.setVelocityConversionFactor(Constants.DrivetrainConstants.kDegreesPerSecondPerRPM);
+
+        this.turnEncoder.setPosition(this.absoluteTurnEncoder.getAbsolutePosition()); 
         
         this.driveEncoder.setPositionConversionFactor(Constants.DrivetrainConstants.kMetersPerRot);
         this.driveEncoder.setVelocityConversionFactor(Constants.DrivetrainConstants.kMetersPerSecondPerRPM); 
@@ -77,8 +81,8 @@ public class SwerveModule {
 
     private void configurePIDControllers() {
         this.turnPIDController.setPositionPIDWrappingEnabled(true); 
-        this.turnPIDController.setPositionPIDWrappingMinInput(-180); 
-        this.turnPIDController.setPositionPIDWrappingMinInput(180); 
+        this.turnPIDController.setPositionPIDWrappingMinInput(0); 
+        this.turnPIDController.setPositionPIDWrappingMinInput(360); 
 
         this.drivePIDController.setP(Constants.DrivetrainConstants.kModuleTurn_P);
         this.drivePIDController.setI(Constants.DrivetrainConstants.kModuleTurn_I); 

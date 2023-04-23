@@ -33,18 +33,22 @@ public final class Constants {
     public static class FrontLeft {
       public static final int kRotate = 0; 
       public static final int kDrive = 1; 
+      public static final int kRotEncoder = 0; 
     }
     public static class FrontRight {
       public static final int kRotate = 2; 
       public static final int kDrive = 3; 
+      public static final int kRotEncoder = 2; 
     }
     public static class BackLeft {
       public static final int kRotate = 4; 
       public static final int kDrive = 5; 
+      public static final int kRotEncoder = 4; 
     }
     public static class BackRight {
       public static final int kRotate = 6; 
       public static final int kDrive = 7; 
+      public static final int kRotEncoder = 6; 
     }
 
     public static final double kGearRatio = 1; 
