@@ -90,7 +90,7 @@ public class Controller {
         return this._controller.getPOV();
     }
 
-    public void setRumble(boolean rumble){
+    public void setRumble(boolean rumble) {
         this._controller.setRumble(RumbleType.kBothRumble, rumble ? 1 : 0);
     }
 

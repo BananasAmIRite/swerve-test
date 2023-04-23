@@ -84,9 +84,9 @@ public class SwerveModule {
         this.turnPIDController.setPositionPIDWrappingMinInput(0); 
         this.turnPIDController.setPositionPIDWrappingMinInput(360); 
 
-        this.drivePIDController.setP(Constants.DrivetrainConstants.kModuleTurn_P);
-        this.drivePIDController.setI(Constants.DrivetrainConstants.kModuleTurn_I); 
-        this.drivePIDController.setD(Constants.DrivetrainConstants.kModuleTurn_D); 
+        this.turnPIDController.setP(Constants.DrivetrainConstants.kModuleTurn_P);
+        this.turnPIDController.setI(Constants.DrivetrainConstants.kModuleTurn_I); 
+        this.turnPIDController.setD(Constants.DrivetrainConstants.kModuleTurn_D); 
         
         this.drivePIDController.setP(Constants.DrivetrainConstants.kModuleDrive_P);
         this.drivePIDController.setI(Constants.DrivetrainConstants.kModuleDrive_I); 
@@ -104,7 +104,7 @@ public class SwerveModule {
     }
 
     private void updateOpenLoopDriveState(double speed) {
-        double percent = MathUtil.clamp(speed / Constants.DrivetrainConstants.kMaxAttainableModuleSpeedMetersPerSecond, -1, 1); 
+        double percent = MathUtil.clamp(speed / Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond, -1, 1); 
         driveMotor.set(percent);
     }
     

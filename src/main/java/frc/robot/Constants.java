@@ -30,6 +30,7 @@ public final class Constants {
   }
 
   public static class DrivetrainConstants {
+    // Wheels
     public static class FrontLeft {
       public static final int kRotate = 0; 
       public static final int kDrive = 1; 
@@ -51,26 +52,46 @@ public final class Constants {
       public static final int kRotEncoder = 6; 
     }
 
-    public static final double kGearRatio = 1; 
+    // Gearing & Conversions
+    public static final double kGearRatio = 6.8; 
     public static final double kWheelRadiusInches = 3; 
     public static final double kMetersPerRot = Units.inchesToMeters(2 * Math.PI * kWheelRadiusInches / kGearRatio);
     public static final double kMetersPerSecondPerRPM = kMetersPerRot / 60;
 
     public static final double kRotateGearRatio = 1; 
-    public static final double kDegreesPerRot = 360/kGearRatio;
-    public static final double kDegreesPerSecondPerRPM = kDegreesPerRot/60; 
+    public static final double kDegreesPerRot = 360 / kGearRatio;
+    public static final double kDegreesPerSecondPerRPM = kDegreesPerRot / 60; 
 
+    // Drivebase
+    public static final double kTrackWidthMeters = 0.75; 
+    public static final double kWheelBaseMeters = 1.0; 
+
+    // Kinematics
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics( // TODO: may need to switch up
-      new Translation2d(0.5, 0.5), // front left
-      new Translation2d(0.5, -0.5), // front right
-      new Translation2d(-0.5, 0.5), // back left
-      new Translation2d(-0.5, -0.5) // back right
+      new Translation2d(kTrackWidthMeters / 2, kWheelBaseMeters / 2), // front left
+      new Translation2d(kTrackWidthMeters / 2, -kWheelBaseMeters / 2), // front right
+      new Translation2d(-kTrackWidthMeters / 2, kWheelBaseMeters / 2), // back left
+      new Translation2d(-kTrackWidthMeters / 2, -kWheelBaseMeters / 2) // back right
     ); 
 
-    public static final double kMaxSpeedMetersPerSecond = 3.21; // max velocity in m/s
-    public static final double kMaxAccelerationMetersPerSecondSquared = 2.54; 
-    public static final double kMaxRotationRadPerSecond = 2 * Math.PI; // max angular velocity in rad/s
-    public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration in rad/s^2
+
+    // speeds (v1)
+    // public static final double kMaxSpeedMetersPerSecond = 3.21; // max velocity in m/s
+    // public static final double kMaxAccelerationMetersPerSecondSquared = 2.54; 
+    // public static final double kMaxRotationRadPerSecond = 2 * Math.PI; // max angular velocity in rad/s
+    // public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration in rad/s^2
+
+    // Speeds (v2) (https://github.com/SwerveDriveSpecialties/swerve-template-2021-unmaintained/blob/master/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java)
+    public static final double kMaxAttainableSpeedMetersPerSecond = 5880.0 / 60.0 / kGearRatio *
+    2 * Units.inchesToMeters(kWheelRadiusInches) * Math.PI; 
+    public static final double kMaxAttainableRotationRadPerSecond = kMaxAttainableSpeedMetersPerSecond /
+    Math.hypot(kTrackWidthMeters / 2.0, kWheelBaseMeters / 2.0); // max rotation of robot
+    
+    public static final double kMaxSpeedMetersPerSecond = kMaxAttainableSpeedMetersPerSecond; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
+    public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 1.0; // max acceleration of robot (accelerate to max speed in 1 second)
+    public static final double kMaxRotationRadPerSecond = kMaxAttainableRotationRadPerSecond; 
+    public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration of robot
+
 
     // can probably be found by just running the whole drivetrain sysid as a differential drive system (lock swerve modules)
     public static final double ksVolts = 0; 
@@ -102,12 +123,9 @@ public final class Constants {
     public static final double kTurnErrorThreshold = 0; 
     public static final double kTurnVelocityThreshold = 0; 
 
-    // just set the motor to 1.0 speed and see how fast the wheel spins from encoders
-    public static final double kMaxAttainableModuleSpeedMetersPerSecond = 0; 
-
     // TODO: tune these
-    public static final int kDriveCurrentLimit = 40; 
-    public static final int kTurnCurrentLimit = 40; 
+    public static final int kDriveCurrentLimit = 60; 
+    public static final int kTurnCurrentLimit = 30; 
 
     public static final double kForwardSlewRate = kMaxAccelerationMetersPerSecondSquared; 
     public static final double kStrafeSlewRate = kMaxAccelerationMetersPerSecondSquared; 
@@ -124,9 +142,12 @@ public final class Constants {
     public static final double kOmega_I = 0; 
     public static final double kOmega_D = 0; 
 
+    public static final double kMaxVelocityMetersPerSecond = 3.21; 
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2.54; 
+
     public static final double kMaxCentripetalAcceleration = 0.8; 
 
-    public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(DrivetrainConstants.kDriveKinematics, new SwerveDriveKinematicsConstraint(DrivetrainConstants.kDriveKinematics, DrivetrainConstants.kMaxAttainableModuleSpeedMetersPerSecond), new CentripetalAccelerationConstraint(kMaxCentripetalAcceleration)); 
+    public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(DrivetrainConstants.kDriveKinematics, new SwerveDriveKinematicsConstraint(DrivetrainConstants.kDriveKinematics, DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond), new CentripetalAccelerationConstraint(kMaxCentripetalAcceleration)); 
   }
 
   public static class LEDs {

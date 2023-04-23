@@ -65,7 +65,7 @@ public class Drivetrain extends SubsystemBase {
         speeds, 
         gyro.getRotation2d()
       )); 
-      SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DrivetrainConstants.kMaxAttainableModuleSpeedMetersPerSecond);
+      SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond);
       swerveDrive(states);
   }
 

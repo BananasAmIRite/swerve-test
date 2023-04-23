@@ -16,6 +16,6 @@ public class MoveForward extends SwerveTrajectoryCommand {
     }
     
     public MoveForward(Drivetrain drivetrain, double distanceMeters) {
-        this(drivetrain, distanceMeters, Constants.DrivetrainConstants.kMaxSpeedMetersPerSecond, Constants.DrivetrainConstants.kMaxAccelerationMetersPerSecondSquared); 
+        this(drivetrain, distanceMeters, Constants.Trajectory.kMaxVelocityMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared); 
     }
 }
