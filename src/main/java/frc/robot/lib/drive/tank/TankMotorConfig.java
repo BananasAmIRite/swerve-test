@@ -1,6 +1,6 @@
-package frc.robot.drive.tank;
+package frc.robot.lib.drive.tank;
 
-import frc.robot.drive.WheelConfig;
+import frc.robot.lib.drive.WheelConfig;
 
 public abstract class TankMotorConfig extends WheelConfig {
     public TankMotorConfig(int port) {

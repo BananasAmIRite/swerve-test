@@ -1,13 +1,14 @@
-package frc.robot.drive.tank;
+package frc.robot.lib.drive.tank;
 
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import frc.robot.drive.DriveSignal;
-import frc.robot.drive.DrivetrainBase;
+import frc.robot.lib.drive.DriveSignal;
+import frc.robot.lib.drive.DrivetrainBase;
 
 public class TankDrivetrain extends DrivetrainBase {
-
+// TODO: finish this stuff, not a big priority tho
     private CANSparkMax[] leftMotors;
     private CANSparkMax[] rightMotors;
 
@@ -15,8 +16,11 @@ public class TankDrivetrain extends DrivetrainBase {
     private MotorControllerGroup rightMotorGroup;
 
     private final TankDrivetrainConfig config;
+
+    private final DifferentialDriveKinematics kinematics;
     public TankDrivetrain(TankDrivetrainConfig config) {
         this.config = config;
+        this.kinematics = config.getKinematics();
     }
 
     private void setupMotors() {
@@ -33,6 +37,11 @@ public class TankDrivetrain extends DrivetrainBase {
             motors[i] = new CANSparkMax(configs[i].getPort(), configs[i].getMotorType());
         }
         return motors;
+    }
+
+    @Override
+    public ChassisSpeeds getChassisSpeeds() {
+        return null;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package frc.robot.drive.swerve;
+package frc.robot.lib.drive.swerve;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
@@ -6,7 +6,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -14,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
+import frc.robot.lib.util.Encoder;
 
 public class SwerveModule {
 
@@ -28,9 +28,9 @@ public class SwerveModule {
     // represents the true, uninverted heading of the drive motor
     private final CANCoder absoluteSteerEncoder;
     
-    private final RelativeEncoder steerEncoder;
+    private final Encoder steerEncoder;
 
-    private final RelativeEncoder driveEncoder;
+    private final Encoder driveEncoder;
 
     private final SwerveModuleConfig config;
 
@@ -46,8 +46,8 @@ public class SwerveModule {
         this.driveMotor = new CANSparkMax(config.getDrivePort(), config.getMotorType());
 
         this.absoluteSteerEncoder = new CANCoder(config.getEncoderPort()); // this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
-        this.steerEncoder = this.steerMotor.getEncoder(); 
-        this.driveEncoder = this.driveMotor.getEncoder(); 
+        this.steerEncoder = new Encoder(this.steerMotor.getEncoder());
+        this.driveEncoder = new Encoder(this.driveMotor.getEncoder());
 
         this.turnPIDController = this.steerMotor.getPIDController(); 
         this.drivePIDController = this.driveMotor.getPIDController(); 
@@ -75,13 +75,13 @@ public class SwerveModule {
     }
 
     private void configureEncoders() {
-        this.steerEncoder.setPositionConversionFactor(config.getSteerPositionConversion()); 
-        this.steerEncoder.setVelocityConversionFactor(config.getSteerVelocityConversion());
+        this.steerEncoder.getEncoder().setPositionConversionFactor(config.getSteerPositionConversion());
+        this.steerEncoder.getEncoder().setVelocityConversionFactor(config.getSteerVelocityConversion());
 
         this.steerEncoder.setPosition(this.absoluteSteerEncoder.getAbsolutePosition()); 
         
-        this.driveEncoder.setPositionConversionFactor(config.getPositionConversion());
-        this.driveEncoder.setVelocityConversionFactor(config.getVelocityConversion());
+        this.driveEncoder.getEncoder().setPositionConversionFactor(config.getPositionConversion());
+        this.driveEncoder.getEncoder().setVelocityConversionFactor(config.getVelocityConversion());
     }
 
     private void configurePIDControllers() {
@@ -126,7 +126,7 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getCurrentState() {
-        return new SwerveModuleState(this.driveEncoder.getVelocity(), Rotation2d.fromDegrees(this.driveEncoder.getPosition())); 
+        return new SwerveModuleState(this.driveEncoder.getEncoder().getVelocity(), Rotation2d.fromDegrees(this.driveEncoder.getPosition()));
     }
 
     public SwerveModulePosition getPosition() {

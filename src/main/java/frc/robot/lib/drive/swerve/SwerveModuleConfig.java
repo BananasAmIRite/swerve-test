@@ -1,6 +1,6 @@
-package frc.robot.drive.swerve;
+package frc.robot.lib.drive.swerve;
 
-import frc.robot.drive.WheelConfig;
+import frc.robot.lib.drive.WheelConfig;
 
 public abstract class SwerveModuleConfig extends WheelConfig {
     public SwerveModuleConfig(int port) {

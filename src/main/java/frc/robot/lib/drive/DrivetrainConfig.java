@@ -1,4 +1,4 @@
-package frc.robot.drive;
+package frc.robot.lib.drive;
 
 public abstract class DrivetrainConfig {
     public abstract double getTrackWidthMeters(); 

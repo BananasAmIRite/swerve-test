@@ -9,8 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.drive.swerve.SwerveDrivetrainConfig;
-import frc.robot.drive.swerve.config.Mk4SwerveModuleConfig;
+import frc.robot.lib.drive.swerve.SwerveDrivetrainConfig;
+import frc.robot.lib.drive.swerve.config.Mk4SwerveModuleConfig;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.SolidLEDPattern;
 import frc.robot.trajectory.TrajectoryCreator;
@@ -49,29 +49,23 @@ public final class Constants {
     public static Mk4SwerveModuleConfig kBackRightConfig = new Mk4SwerveModuleConfig(
       kWheelRadiusInches, 
       6, 7, 6
-    ); 
-
-    // TODO: create SwerveDrivetrain (extends a base Drivetrain with NavX, etc. ) that will handle all of this with support for multiple wheels
+    );
 
     // Drivebase
     public static final double kTrackWidthMeters = 0.75; 
     public static final double kWheelBaseMeters = 1.0; 
 
     public static SwerveDrivetrainConfig kDrivetrainConfig = new SwerveDrivetrainConfig(kTrackWidthMeters, kWheelBaseMeters);
+
+    // Kinematics
+    public static final SwerveDriveKinematics kDriveKinematics;
     static {
       kDrivetrainConfig.addSwerveModule(new Translation2d(kTrackWidthMeters / 2, kWheelBaseMeters / 2), kFrontLeftConfig); 
       kDrivetrainConfig.addSwerveModule(new Translation2d(kTrackWidthMeters / 2, -kWheelBaseMeters / 2), kFrontRightConfig); 
       kDrivetrainConfig.addSwerveModule(new Translation2d(-kTrackWidthMeters / 2, kWheelBaseMeters / 2), kBackLeftConfig); 
-      kDrivetrainConfig.addSwerveModule(new Translation2d(-kTrackWidthMeters / 2, -kWheelBaseMeters / 2), kBackRightConfig); 
+      kDrivetrainConfig.addSwerveModule(new Translation2d(-kTrackWidthMeters / 2, -kWheelBaseMeters / 2), kBackRightConfig);
+      kDriveKinematics = kDrivetrainConfig.getKinematics();
     }
-
-    // Kinematics
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics( // TODO: may need to switch up
-      new Translation2d(kTrackWidthMeters / 2, kWheelBaseMeters / 2), // front left
-      new Translation2d(kTrackWidthMeters / 2, -kWheelBaseMeters / 2), // front right
-      new Translation2d(-kTrackWidthMeters / 2, kWheelBaseMeters / 2), // back left
-      new Translation2d(-kTrackWidthMeters / 2, -kWheelBaseMeters / 2) // back right
-    ); 
 
 
     // speeds (v1)
@@ -81,14 +75,18 @@ public final class Constants {
     // public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration in rad/s^2
 
     // Speeds (v2) (https://github.com/SwerveDriveSpecialties/swerve-template-2021-unmaintained/blob/master/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java)
-    
-        // TODO: same thing, add into DriveController
+
     public static final double kMaxSpeedMetersPerSecond = 1.0; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
     public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; // max acceleration of robot (accelerate to max speed in 1 second)
     public static final double kMaxRotationRadPerSecond = 1.0; 
     public static final double kMaxRotationAccelerationRadPerSecondSquared = 1.0; // max angular acceleration of robot
 
-    // TODO: determine where these should go
+    public static final double kForwardSlewRate = kMaxAccelerationMetersPerSecondSquared;
+    public static final double kStrafeSlewRate = kMaxAccelerationMetersPerSecondSquared;
+    public static final double kTurnSlewRate = kMaxRotationAccelerationRadPerSecondSquared;
+
+
+    // TODO: determine where these should go, will probably just be put into module config
     // can probably be found by just running the whole drivetrain sysid as a differential drive system (lock swerve modules)
     public static final double ksVolts = 0; 
     public static final double kvVoltSecondsPerMeter = 0; 
@@ -101,13 +99,13 @@ public final class Constants {
     // public static final double kaTurnVoltSecondsSquaredPerMeter = 0; 
 
 
-    // TODO: determine where these should go
+    // TODO: determine where these should go, will probably just be put into module config
     // drivetrain sysid (lock wheels)
     public static final double kModuleDrive_P = 0; 
     public static final double kModuleDrive_I = 0; 
     public static final double kModuleDrive_D = 0; 
 
-    // TODO: determine where these should go
+    // TODO: determine where these should go, will probably just be put into module config
     // found from sysid for one of the turn modules or tune by yourself
     public static final double kModuleTurn_P = 0; 
     public static final double kModuleTurn_I = 0; 
@@ -120,13 +118,7 @@ public final class Constants {
     public static final double kTurn_D = 0; 
     public static final double kTurn_FF = 0; 
     public static final double kTurnErrorThreshold = 0; 
-    public static final double kTurnVelocityThreshold = 0; 
-
-    // TODO: abstract these into a DriveController layer that acts as the translator from controller/code inputs to DriveSignals
-    //  slew rate should be applied there
-    public static final double kForwardSlewRate = kMaxAccelerationMetersPerSecondSquared; 
-    public static final double kStrafeSlewRate = kMaxAccelerationMetersPerSecondSquared; 
-    public static final double kTurnSlewRate = kMaxRotationAccelerationRadPerSecondSquared; 
+    public static final double kTurnVelocityThreshold = 0;
   }
 
   public static class Trajectory {

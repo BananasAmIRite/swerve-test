@@ -1,6 +1,5 @@
 package frc.robot.trajectory;
 
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.spline.Spline;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -8,7 +7,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
-import frc.robot.commands.trajectory.SwerveTrajectoryCommand;
+import frc.robot.lib.drive.swerve.commands.SwerveTrajectoryCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 import java.util.List;

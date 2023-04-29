@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.lib.util;
 
 public class ControllerUtils {
     public static double applyDeadband(double value, double deadbandValue){

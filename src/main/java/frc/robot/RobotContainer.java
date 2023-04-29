@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.lib.drive.swerve.SwerveDrivetrain;
+import frc.robot.lib.drive.swerve.commands.SwerveTeleopCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.DriverController;
 
@@ -26,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
+
+// TODO: (BIG) make a good abstraction for trajectory tuning values
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain(Constants.DrivetrainConstants.kDrivetrainConfig);
@@ -53,13 +57,13 @@ public class RobotContainer {
     Pose2d res = rel2; 
     System.out.println(res);
     // driverController.setChassisSpeedsSupplier(drivetrain::getChassisSpeeds); // comment in simulation
-    drivetrain.setDefaultCommand(new RunCommand(() -> {
-      ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 
-      SmartDashboard.putNumber("x", speeds.vxMetersPerSecond); 
-      SmartDashboard.putNumber("y", speeds.vyMetersPerSecond); 
-      SmartDashboard.putNumber("rotation", speeds.omegaRadiansPerSecond); 
-      drivetrain.swerveDrive(speeds);
-    }, drivetrain));
+    drivetrain.setDefaultCommand(new SwerveTeleopCommand(drivetrain, driverController,
+            Constants.DrivetrainConstants.kMaxSpeedMetersPerSecond,
+            Constants.DrivetrainConstants.kMaxRotationRadPerSecond,
+            Constants.DrivetrainConstants.kForwardSlewRate,
+            Constants.DrivetrainConstants.kStrafeSlewRate,
+            Constants.DrivetrainConstants.kTurnSlewRate,
+            this.drivetrain::getChassisSpeeds));
   }
 
   /**
@@ -71,9 +75,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
-
-  }
+  private void configureBindings() {}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

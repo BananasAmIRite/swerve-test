@@ -1,4 +1,4 @@
-package frc.robot.commands.trajectory;
+package frc.robot.lib.drive.swerve.commands;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -19,11 +19,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
+import frc.robot.lib.drive.DriveCommand;
+import frc.robot.lib.drive.DriveSignal;
+import frc.robot.lib.drive.swerve.SwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
-public class SwerveTrajectoryCommand extends CommandBase
+public class SwerveTrajectoryCommand extends DriveCommand
 {
-    private final Drivetrain subsystem;
+    private final SwerveDrivetrain subsystem;
     private final HolonomicDriveController controller;
 
     private final Timer timer;
@@ -36,14 +39,15 @@ public class SwerveTrajectoryCommand extends CommandBase
 
     private SwerveModuleState[] prevSpeeds; 
 
-    private final boolean zero; 
+    private final boolean zero;
 
-    public SwerveTrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory) {
-        this(drivetrain, trajectory, true); 
+    public SwerveTrajectoryCommand(SwerveDrivetrain drivetrain, Trajectory trajectory) {
+        this(drivetrain, trajectory, true);
     }
 
-    public SwerveTrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory, boolean zero)
+    public SwerveTrajectoryCommand(SwerveDrivetrain drivetrain, Trajectory trajectory, boolean zero)
     {
+        super(drivetrain);
         this.subsystem = drivetrain;
         this.timer = new Timer();
         // Use addRequirements() here to declare subsystem dependencies.
@@ -54,6 +58,7 @@ public class SwerveTrajectoryCommand extends CommandBase
         this.trajectory = trajectory;
         this.maxTime = trajectory.getTotalTimeSeconds();
 
+        // TODO: figure out where to put these
         this.controller = new HolonomicDriveController(
             new PIDController(
             Constants.Trajectory.kDrive_P, Constants.Trajectory.kDrive_I, Constants.Trajectory.kDrive_D
@@ -84,32 +89,29 @@ public class SwerveTrajectoryCommand extends CommandBase
                 )
         );
         
-        // figure out a way that doesnt involve resetting odometry.
+        // figure out a way that doesn't involve resetting odometry.
         // if we're using field-relative odometry though, we should be fine just not resetting as long as the setpoints are accurate to the field-relative coordinate system
         if (zero) subsystem.resetOdometry(initialState.poseMeters); 
 
     }
 
     @Override
-    public void execute() {
+    public DriveSignal update() {
         double curTime = timer.get();
 
         Trajectory.State state = this.trajectory.sample(curTime);
 
         if (prevTime < 0) {
-            subsystem.swerveDrive(Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds()));
             prevTime = curTime;
-            return;
+            return new DriveSignal(new ChassisSpeeds(), false);
         }
 
         ChassisSpeeds speeds = controller.calculate(subsystem.getPose(), state, Rotation2d.fromDegrees(0));
 
-        SwerveModuleState[] wheelStates = Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-
-        this.subsystem.swerveDrive(wheelStates); 
-
-        prevSpeeds = wheelStates;
+        prevSpeeds = subsystem.getKinematics().toSwerveModuleStates(speeds);
         prevTime = curTime;
+
+        return new DriveSignal(speeds, false);
     }
 
     @Override

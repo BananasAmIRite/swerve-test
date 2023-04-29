@@ -1,6 +1,8 @@
-package frc.robot.drive.tank;
+package frc.robot.lib.drive.tank;
 
-import frc.robot.drive.DrivetrainConfig;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import frc.robot.lib.drive.DrivetrainConfig;
+import frc.robot.lib.drive.tank.TankMotorConfig;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,9 +17,12 @@ public class TankDrivetrainConfig extends DrivetrainConfig {
 
     private double maxSpeed;
 
+    private DifferentialDriveKinematics kinematics;
+
     public TankDrivetrainConfig(double trackWidth, double driveBase) {
         this.trackWidth = trackWidth;
         this.wheelBase = driveBase;
+        this.kinematics = new DifferentialDriveKinematics(this.trackWidth);
     }
 
     public void setLeftMotorConfigs(TankMotorConfig... configs) {
@@ -51,5 +56,9 @@ public class TankDrivetrainConfig extends DrivetrainConfig {
     @Override
     public double getMaxDriveSpeed() {
         return this.maxSpeed;
+    }
+
+    public DifferentialDriveKinematics getKinematics() {
+        return kinematics;
     }
 }

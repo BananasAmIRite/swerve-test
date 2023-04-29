@@ -1,8 +1,8 @@
-package frc.robot.drive.swerve.config;
+package frc.robot.lib.drive.swerve.config;
 
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.util.Units;
-import frc.robot.drive.swerve.SwerveModuleConfig;
+import frc.robot.lib.drive.swerve.SwerveModuleConfig;
 
 public class Mk4SwerveModuleConfig extends SwerveModuleConfig {
     private final double wheelRadiusInches;

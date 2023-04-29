@@ -1,4 +1,4 @@
-package frc.robot.drive.swerve;
+package frc.robot.lib.drive.swerve;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
-import frc.robot.drive.DriveSignal;
-import frc.robot.drive.DrivetrainBase;
-import frc.robot.drive.swerve.SwerveModule.DriveState;
+import frc.robot.lib.drive.DriveSignal;
+import frc.robot.lib.drive.DrivetrainBase;
+import frc.robot.lib.drive.swerve.SwerveModule.DriveState;
 
 public class SwerveDrivetrain extends DrivetrainBase {
     private final SwerveDrivetrainConfig config; 
@@ -57,6 +57,11 @@ public class SwerveDrivetrain extends DrivetrainBase {
         }
 
         this.kinematics = new SwerveDriveKinematics(translations); 
+    }
+
+    @Override
+    public ChassisSpeeds getChassisSpeeds() {
+        return kinematics.toChassisSpeeds(this.getStates());
     }
 
     @Override
@@ -117,8 +122,12 @@ public class SwerveDrivetrain extends DrivetrainBase {
         return this.odometry.getEstimatedPosition();
   }
 
+    public void brake() {
+        drive(Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds()));
+    }
+
     @Override
     public void periodic() {
-
+        this.odometry.update(gyro.getRotation2d(), getPositions());
     }
 }

@@ -6,7 +6,7 @@ import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import frc.robot.Constants;
-import frc.robot.commands.trajectory.SwerveTrajectoryCommand;
+import frc.robot.lib.drive.swerve.commands.SwerveTrajectoryCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class MoveForward extends SwerveTrajectoryCommand {
