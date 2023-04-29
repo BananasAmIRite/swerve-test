@@ -19,20 +19,20 @@ public class SwerveModule {
 
     private SwerveModuleState state;
     
-    private CANSparkMax steerMotor; 
-    private CANSparkMax driveMotor;
+    private final CANSparkMax steerMotor;
+    private final CANSparkMax driveMotor;
     
-    private SparkMaxPIDController turnPIDController; 
-    private SparkMaxPIDController drivePIDController; 
+    private final SparkMaxPIDController turnPIDController;
+    private final SparkMaxPIDController drivePIDController;
 
     // represents the true, uninverted heading of the drive motor
-    private CANCoder absoluteSteerEncoder;
+    private final CANCoder absoluteSteerEncoder;
     
-    private RelativeEncoder steerEncoder; 
+    private final RelativeEncoder steerEncoder;
 
-    private RelativeEncoder driveEncoder; 
+    private final RelativeEncoder driveEncoder;
 
-    private SwerveModuleConfig config; 
+    private final SwerveModuleConfig config;
 
 
     private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(
@@ -42,8 +42,8 @@ public class SwerveModule {
     ); 
 
     public SwerveModule(SwerveModuleConfig config) {
-        this.steerMotor = new CANSparkMax(config.getSteerPort(), MotorType.kBrushless); 
-        this.driveMotor = new CANSparkMax(config.getDrivePort(), MotorType.kBrushless); 
+        this.steerMotor = new CANSparkMax(config.getSteerPort(), config.getMotorType());
+        this.driveMotor = new CANSparkMax(config.getDrivePort(), config.getMotorType());
 
         this.absoluteSteerEncoder = new CANCoder(config.getEncoderPort()); // this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
         this.steerEncoder = this.steerMotor.getEncoder(); 
@@ -80,8 +80,8 @@ public class SwerveModule {
 
         this.steerEncoder.setPosition(this.absoluteSteerEncoder.getAbsolutePosition()); 
         
-        this.driveEncoder.setPositionConversionFactor(config.getDrivePositionConversion());
-        this.driveEncoder.setVelocityConversionFactor(config.getDriveVelocityConversion()); 
+        this.driveEncoder.setPositionConversionFactor(config.getPositionConversion());
+        this.driveEncoder.setVelocityConversionFactor(config.getVelocityConversion());
     }
 
     private void configurePIDControllers() {

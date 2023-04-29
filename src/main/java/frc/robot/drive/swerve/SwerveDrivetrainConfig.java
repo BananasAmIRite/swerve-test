@@ -3,28 +3,28 @@ package frc.robot.drive.swerve;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.drive.DrivetrainConfig;
 
 public class SwerveDrivetrainConfig extends DrivetrainConfig {
 
-    private double trackWidth; 
-    private double driveBase; 
+    private final double trackWidth;
+    private final double wheelBase;
 
-    private List<SwerveModuleLocation> locations = new ArrayList<>(); 
+    private final List<SwerveModuleLocation> locations = new ArrayList<>();
 
     private double maxModuleSpeed = 0; 
 
     public SwerveDrivetrainConfig(double trackWidth, double driveBase) {
         this.trackWidth = trackWidth; 
-        this.driveBase = driveBase; 
+        this.wheelBase = driveBase;
     }
 
-    public SwerveDrivetrainConfig addSwerveModule(Translation2d translation, SwerveModuleConfig config) {
+    public void addSwerveModule(Translation2d translation, SwerveModuleConfig config) {
         this.locations.add(new SwerveModuleLocation(translation, config));
-        this.maxModuleSpeed = Collections.min(locations, (a, b) -> (int) (a.config.getMaxAttainableSpeed() - b.config.getMaxAttainableSpeed())).config.getMaxAttainableSpeed(); 
-        return this; 
+        this.maxModuleSpeed = Collections.min(locations, (a, b) -> (int) (a.config.getMaxAttainableSpeed() - b.config.getMaxAttainableSpeed())).config.getMaxAttainableSpeed();
     }
 
     @Override
@@ -34,19 +34,24 @@ public class SwerveDrivetrainConfig extends DrivetrainConfig {
 
     @Override
     public double getWheelBaseMeters() {
-        return driveBase;
+        return wheelBase;
     }
 
     public double getMaxModuleSpeed() {
         return maxModuleSpeed; 
     }
 
+    @Override
     public double getMaxDriveSpeed() {
         return getMaxModuleSpeed(); 
     }
 
-    public double getMaxRotationSpeed() {
-        return getMaxDriveSpeed() / Math.hypot(getTrackWidthMeters() / 2.0, getWheelBaseMeters() / 2.0); 
+    public List<SwerveModuleConfig> getModuleConfigs() {
+        return locations.stream().map(e -> e.config).collect(Collectors.toList());
+    }
+
+    public List<Translation2d> getModuleTranslations() {
+        return locations.stream().map(e -> e.translation).collect(Collectors.toList());
     }
 
     private static class SwerveModuleLocation {

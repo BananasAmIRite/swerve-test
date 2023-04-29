@@ -86,7 +86,7 @@ public class Controller {
         return this._controller.getRightTriggerAxis();
     }
 
-    public int dPadAngle(){
+    public int dPadAngle() {
         return this._controller.getPOV();
     }
 

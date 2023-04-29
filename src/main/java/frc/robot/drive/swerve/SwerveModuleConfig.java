@@ -1,25 +1,10 @@
 package frc.robot.drive.swerve;
 
-import edu.wpi.first.math.util.Units;
+import frc.robot.drive.WheelConfig;
 
-public abstract class SwerveModuleConfig {
-    public abstract double getWheelRadiusInches();
-
-    // drive
-    public abstract double getDriveGearRatio();
-
-    /**
-     * Drive position conversion in Meters per Rotation
-     */
-    public double getDrivePositionConversion() {
-        return Units.inchesToMeters(2 * Math.PI * getWheelRadiusInches() / getDriveGearRatio());
-    }
-
-    /**
-     * Drive velocity conversion in Meters per Second per RPM
-     */
-    public double getDriveVelocityConversion() {
-        return getDrivePositionConversion() / 60; 
+public abstract class SwerveModuleConfig extends WheelConfig {
+    public SwerveModuleConfig(int port) {
+        super(port);
     }
 
     public int getDriveCurrentLimit() {
@@ -52,7 +37,5 @@ public abstract class SwerveModuleConfig {
 
     public abstract int getSteerPort(); 
 
-    public abstract int getEncoderPort(); 
-
-    public abstract double getMaxAttainableSpeed(); 
+    public abstract int getEncoderPort();
 }

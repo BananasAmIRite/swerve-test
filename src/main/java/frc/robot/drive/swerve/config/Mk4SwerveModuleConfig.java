@@ -1,16 +1,18 @@
 package frc.robot.drive.swerve.config;
 
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.util.Units;
 import frc.robot.drive.swerve.SwerveModuleConfig;
 
 public class Mk4SwerveModuleConfig extends SwerveModuleConfig {
-    private double wheelRadiusInches; 
+    private final double wheelRadiusInches;
 
-    private int kDrivePort; 
-    private int kSteerPort; 
-    private int kEncoderPort; 
+    private final int kDrivePort;
+    private final int kSteerPort;
+    private final int kEncoderPort;
 
     public Mk4SwerveModuleConfig(double wheelRadiusInches, int kDrive, int kSteer, int kEncoder) {
+        super(kDrive);
         this.wheelRadiusInches = wheelRadiusInches; 
 
         this.kDrivePort = kDrive; 
@@ -24,7 +26,7 @@ public class Mk4SwerveModuleConfig extends SwerveModuleConfig {
     }
 
     @Override
-    public double getDriveGearRatio() {
+    public double getGearRatio() {
         return 6.75; 
     }
 
@@ -50,6 +52,11 @@ public class Mk4SwerveModuleConfig extends SwerveModuleConfig {
 
     @Override
     public double getMaxAttainableSpeed() {
-        return 5880.0 / 60.0 / getDriveGearRatio() * 2 * Units.inchesToMeters(getWheelRadiusInches()) * Math.PI; 
+        return 5880.0 / 60.0 / getGearRatio() * 2 * Units.inchesToMeters(getWheelRadiusInches()) * Math.PI;
+    }
+
+    @Override
+    public CANSparkMaxLowLevel.MotorType getMotorType() {
+        return CANSparkMaxLowLevel.MotorType.kBrushless;
     }
 }
