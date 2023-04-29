@@ -4,9 +4,11 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.lib.drive.DriveSignal;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class TurnBy extends CommandBase {
@@ -65,7 +67,7 @@ public class TurnBy extends CommandBase {
             SmartDashboard.putNumber("error", pidController.getPositionError()); 
             // SmartDashboard.putNumber("", output); 
             SmartDashboard.putNumber("output", output); 
-            drivetrain.swerveDrive(0, 0, output);
+            drivetrain.drive(new DriveSignal(new ChassisSpeeds(0, 0, output), false));
             // this.m_useOutput.accept(output);
         }
     

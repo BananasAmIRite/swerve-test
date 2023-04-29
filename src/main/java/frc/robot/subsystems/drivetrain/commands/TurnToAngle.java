@@ -4,9 +4,11 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.lib.drive.DriveSignal;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class TurnToAngle extends CommandBase {
@@ -65,8 +67,8 @@ public class TurnToAngle extends CommandBase {
             SmartDashboard.putNumber("error", pidController.getPositionError()); 
             // SmartDashboard.putNumber("", output); 
             SmartDashboard.putNumber("output", output); 
-            SmartDashboard.putNumber("angle velo", pidController.getVelocityError()); 
-            drivetrain.swerveDrive(0, 0, output);
+            SmartDashboard.putNumber("angle velo", pidController.getVelocityError());
+            drivetrain.drive(new DriveSignal(new ChassisSpeeds(0, 0, output), false));
         }
     
         @Override
