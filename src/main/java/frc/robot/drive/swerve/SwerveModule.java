@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drivetrain;
+package frc.robot.drive.swerve;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
@@ -19,18 +19,20 @@ public class SwerveModule {
 
     private SwerveModuleState state;
     
-    private CANSparkMax turnMotor; 
+    private CANSparkMax steerMotor; 
     private CANSparkMax driveMotor;
     
     private SparkMaxPIDController turnPIDController; 
     private SparkMaxPIDController drivePIDController; 
 
     // represents the true, uninverted heading of the drive motor
-    private CANCoder absoluteTurnEncoder;
+    private CANCoder absoluteSteerEncoder;
     
-    private RelativeEncoder turnEncoder; 
+    private RelativeEncoder steerEncoder; 
 
     private RelativeEncoder driveEncoder; 
+
+    private SwerveModuleConfig config; 
 
 
     private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(
@@ -39,44 +41,47 @@ public class SwerveModule {
         Constants.DrivetrainConstants.kaVoltSecondsSquaredPerMeter
     ); 
 
-    public SwerveModule(int kTurn, int kDrive, int kTurnEncoder) {
-        this.turnMotor = new CANSparkMax(kTurn, MotorType.kBrushless); 
-        this.driveMotor = new CANSparkMax(kDrive, MotorType.kBrushless); 
+    public SwerveModule(SwerveModuleConfig config) {
+        this.steerMotor = new CANSparkMax(config.getSteerPort(), MotorType.kBrushless); 
+        this.driveMotor = new CANSparkMax(config.getDrivePort(), MotorType.kBrushless); 
 
-        this.absoluteTurnEncoder = new CANCoder(kTurnEncoder); // this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
-        this.turnEncoder = this.turnMotor.getEncoder(); 
+        this.absoluteSteerEncoder = new CANCoder(config.getEncoderPort()); // this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
+        this.steerEncoder = this.steerMotor.getEncoder(); 
         this.driveEncoder = this.driveMotor.getEncoder(); 
 
-        this.turnPIDController = this.turnMotor.getPIDController(); 
+        this.turnPIDController = this.steerMotor.getPIDController(); 
         this.drivePIDController = this.driveMotor.getPIDController(); 
+
+        this.config = config; 
 
         configureMotors();
         configureEncoders();
         configurePIDControllers();
+        
 
         // in case of brownout
-        this.turnMotor.burnFlash(); 
+        this.steerMotor.burnFlash(); 
         this.driveMotor.burnFlash(); 
     }
 
     private void configureMotors() {
-        this.driveMotor.setSmartCurrentLimit(Constants.DrivetrainConstants.kDriveCurrentLimit); 
+        this.driveMotor.setSmartCurrentLimit(config.getDriveCurrentLimit()); 
         this.driveMotor.setIdleMode(IdleMode.kBrake); 
         this.driveMotor.enableVoltageCompensation(12); 
 
-        this.turnMotor.setSmartCurrentLimit(Constants.DrivetrainConstants.kTurnCurrentLimit); 
-        this.turnMotor.setIdleMode(IdleMode.kBrake); 
-        this.turnMotor.enableVoltageCompensation(12); 
+        this.steerMotor.setSmartCurrentLimit(config.getSteerCurrentLimit()); 
+        this.steerMotor.setIdleMode(IdleMode.kBrake); 
+        this.steerMotor.enableVoltageCompensation(12); 
     }
 
     private void configureEncoders() {
-        this.turnEncoder.setPositionConversionFactor(Constants.DrivetrainConstants.kDegreesPerRot); 
-        this.turnEncoder.setVelocityConversionFactor(Constants.DrivetrainConstants.kDegreesPerSecondPerRPM);
+        this.steerEncoder.setPositionConversionFactor(config.getSteerPositionConversion()); 
+        this.steerEncoder.setVelocityConversionFactor(config.getSteerVelocityConversion());
 
-        this.turnEncoder.setPosition(this.absoluteTurnEncoder.getAbsolutePosition()); 
+        this.steerEncoder.setPosition(this.absoluteSteerEncoder.getAbsolutePosition()); 
         
-        this.driveEncoder.setPositionConversionFactor(Constants.DrivetrainConstants.kMetersPerRot);
-        this.driveEncoder.setVelocityConversionFactor(Constants.DrivetrainConstants.kMetersPerSecondPerRPM); 
+        this.driveEncoder.setPositionConversionFactor(config.getDrivePositionConversion());
+        this.driveEncoder.setVelocityConversionFactor(config.getDriveVelocityConversion()); 
     }
 
     private void configurePIDControllers() {
@@ -104,7 +109,7 @@ public class SwerveModule {
     }
 
     private void updateOpenLoopDriveState(double speed) {
-        double percent = MathUtil.clamp(speed / Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond, -1, 1); 
+        double percent = MathUtil.clamp(speed / config.getMaxAttainableSpeed(), -1, 1); 
         driveMotor.set(percent);
     }
     

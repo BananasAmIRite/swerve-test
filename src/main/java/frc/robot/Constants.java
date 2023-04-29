@@ -8,8 +8,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.drive.swerve.SwerveDrivetrainConfig;
+import frc.robot.drive.swerve.config.Mk4SwerveModuleConfig;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.SolidLEDPattern;
 import frc.robot.trajectory.TrajectoryCreator;
@@ -30,41 +31,39 @@ public final class Constants {
   }
 
   public static class DrivetrainConstants {
-    // Wheels
-    public static class FrontLeft {
-      public static final int kRotate = 0; 
-      public static final int kDrive = 1; 
-      public static final int kRotEncoder = 0; 
-    }
-    public static class FrontRight {
-      public static final int kRotate = 2; 
-      public static final int kDrive = 3; 
-      public static final int kRotEncoder = 2; 
-    }
-    public static class BackLeft {
-      public static final int kRotate = 4; 
-      public static final int kDrive = 5; 
-      public static final int kRotEncoder = 4; 
-    }
-    public static class BackRight {
-      public static final int kRotate = 6; 
-      public static final int kDrive = 7; 
-      public static final int kRotEncoder = 6; 
-    }
 
-    // Gearing & Conversions
-    public static final double kGearRatio = 6.8; 
     public static final double kWheelRadiusInches = 3; 
-    public static final double kMetersPerRot = Units.inchesToMeters(2 * Math.PI * kWheelRadiusInches / kGearRatio);
-    public static final double kMetersPerSecondPerRPM = kMetersPerRot / 60;
 
-    public static final double kRotateGearRatio = 1; 
-    public static final double kDegreesPerRot = 360 / kGearRatio;
-    public static final double kDegreesPerSecondPerRPM = kDegreesPerRot / 60; 
+    public static Mk4SwerveModuleConfig kFrontLeftConfig = new Mk4SwerveModuleConfig(
+      kWheelRadiusInches, 
+      0, 1, 0
+    ); 
+    public static Mk4SwerveModuleConfig kFrontRightConfig = new Mk4SwerveModuleConfig(
+      kWheelRadiusInches, 
+      2, 3, 2
+    ); 
+    public static Mk4SwerveModuleConfig kBackLeftConfig = new Mk4SwerveModuleConfig(
+      kWheelRadiusInches, 
+      4, 5, 4
+    ); 
+    public static Mk4SwerveModuleConfig kBackRightConfig = new Mk4SwerveModuleConfig(
+      kWheelRadiusInches, 
+      6, 7, 6
+    ); 
+
+    // TODO: create SwerveDrivetrain (extends a base Drivetrain with NavX, etc. ) that will handle all of this with support for multiple wheels
 
     // Drivebase
     public static final double kTrackWidthMeters = 0.75; 
     public static final double kWheelBaseMeters = 1.0; 
+
+    public static SwerveDrivetrainConfig kDrivetrainConfig = new SwerveDrivetrainConfig(kTrackWidthMeters, kWheelBaseMeters);
+    static {
+      kDrivetrainConfig.addSwerveModule(new Translation2d(kTrackWidthMeters / 2, kWheelBaseMeters / 2), kFrontLeftConfig); 
+      kDrivetrainConfig.addSwerveModule(new Translation2d(kTrackWidthMeters / 2, -kWheelBaseMeters / 2), kFrontRightConfig); 
+      kDrivetrainConfig.addSwerveModule(new Translation2d(-kTrackWidthMeters / 2, kWheelBaseMeters / 2), kBackLeftConfig); 
+      kDrivetrainConfig.addSwerveModule(new Translation2d(-kTrackWidthMeters / 2, -kWheelBaseMeters / 2), kBackRightConfig); 
+    }
 
     // Kinematics
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics( // TODO: may need to switch up
@@ -82,17 +81,14 @@ public final class Constants {
     // public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration in rad/s^2
 
     // Speeds (v2) (https://github.com/SwerveDriveSpecialties/swerve-template-2021-unmaintained/blob/master/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java)
-    public static final double kMaxAttainableSpeedMetersPerSecond = 5880.0 / 60.0 / kGearRatio *
-    2 * Units.inchesToMeters(kWheelRadiusInches) * Math.PI; 
-    public static final double kMaxAttainableRotationRadPerSecond = kMaxAttainableSpeedMetersPerSecond /
-    Math.hypot(kTrackWidthMeters / 2.0, kWheelBaseMeters / 2.0); // max rotation of robot
     
-    public static final double kMaxSpeedMetersPerSecond = kMaxAttainableSpeedMetersPerSecond; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
-    public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 1.0; // max acceleration of robot (accelerate to max speed in 1 second)
-    public static final double kMaxRotationRadPerSecond = kMaxAttainableRotationRadPerSecond; 
-    public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration of robot
+        // TODO: same thing, add into DriveController
+    public static final double kMaxSpeedMetersPerSecond = 1.0; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.0; // max acceleration of robot (accelerate to max speed in 1 second)
+    public static final double kMaxRotationRadPerSecond = 1.0; 
+    public static final double kMaxRotationAccelerationRadPerSecondSquared = 1.0; // max angular acceleration of robot
 
-
+    // TODO: determine where these should go
     // can probably be found by just running the whole drivetrain sysid as a differential drive system (lock swerve modules)
     public static final double ksVolts = 0; 
     public static final double kvVoltSecondsPerMeter = 0; 
@@ -105,16 +101,19 @@ public final class Constants {
     // public static final double kaTurnVoltSecondsSquaredPerMeter = 0; 
 
 
+    // TODO: determine where these should go
     // drivetrain sysid (lock wheels)
     public static final double kModuleDrive_P = 0; 
     public static final double kModuleDrive_I = 0; 
     public static final double kModuleDrive_D = 0; 
 
+    // TODO: determine where these should go
     // found from sysid for one of the turn modules or tune by yourself
     public static final double kModuleTurn_P = 0; 
     public static final double kModuleTurn_I = 0; 
     public static final double kModuleTurn_D = 0; 
 
+    // TODO: determine where these should go
     // turn in place pid
     public static final double kTurn_P = 0; 
     public static final double kTurn_I = 0; 
@@ -123,10 +122,8 @@ public final class Constants {
     public static final double kTurnErrorThreshold = 0; 
     public static final double kTurnVelocityThreshold = 0; 
 
-    // TODO: tune these
-    public static final int kDriveCurrentLimit = 60; 
-    public static final int kTurnCurrentLimit = 30; 
-
+    // TODO: abstract these into a DriveController layer that acts as the translator from controller/code inputs to DriveSignals
+    //  slew rate should be applied there
     public static final double kForwardSlewRate = kMaxAccelerationMetersPerSecondSquared; 
     public static final double kStrafeSlewRate = kMaxAccelerationMetersPerSecondSquared; 
     public static final double kTurnSlewRate = kMaxRotationAccelerationRadPerSecondSquared; 
@@ -147,7 +144,7 @@ public final class Constants {
 
     public static final double kMaxCentripetalAcceleration = 0.8; 
 
-    public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(DrivetrainConstants.kDriveKinematics, new SwerveDriveKinematicsConstraint(DrivetrainConstants.kDriveKinematics, DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond), new CentripetalAccelerationConstraint(kMaxCentripetalAcceleration)); 
+    public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(DrivetrainConstants.kDriveKinematics, new SwerveDriveKinematicsConstraint(DrivetrainConstants.kDriveKinematics, DrivetrainConstants.kDrivetrainConfig.getMaxDriveSpeed()), new CentripetalAccelerationConstraint(kMaxCentripetalAcceleration)); 
   }
 
   public static class LEDs {
@@ -164,5 +161,5 @@ public final class Constants {
     public static final class Patterns {
       public static final LEDPattern kDefault = new SolidLEDPattern(Color.kOrange); 
     }
-}
+  }
 }

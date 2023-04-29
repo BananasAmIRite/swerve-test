@@ -13,22 +13,27 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.drivetrain.SwerveModule.DriveState;
+import frc.robot.drive.swerve.SwerveDrivetrainConfig;
+import frc.robot.drive.swerve.SwerveModule;
+import frc.robot.drive.swerve.SwerveModule.DriveState;
 
 public class Drivetrain extends SubsystemBase {
 
-  private SwerveModule frontLeft = new SwerveModule(Constants.DrivetrainConstants.FrontLeft.kRotate, Constants.DrivetrainConstants.FrontLeft.kDrive, Constants.DrivetrainConstants.FrontLeft.kRotEncoder); 
-  private SwerveModule frontRight = new SwerveModule(Constants.DrivetrainConstants.FrontRight.kRotate, Constants.DrivetrainConstants.FrontRight.kDrive, Constants.DrivetrainConstants.FrontRight.kRotEncoder); 
-  private SwerveModule backLeft = new SwerveModule(Constants.DrivetrainConstants.BackLeft.kRotate, Constants.DrivetrainConstants.BackLeft.kDrive, Constants.DrivetrainConstants.BackLeft.kRotEncoder); 
-  private SwerveModule backRight = new SwerveModule(Constants.DrivetrainConstants.BackRight.kRotate, Constants.DrivetrainConstants.BackRight.kDrive, Constants.DrivetrainConstants.BackRight.kRotEncoder); 
+  private SwerveModule frontLeft = new SwerveModule(Constants.DrivetrainConstants.kFrontLeftConfig); 
+  private SwerveModule frontRight = new SwerveModule(Constants.DrivetrainConstants.kFrontRightConfig); 
+  private SwerveModule backLeft = new SwerveModule(Constants.DrivetrainConstants.kBackLeftConfig); 
+  private SwerveModule backRight = new SwerveModule(Constants.DrivetrainConstants.kBackRightConfig); 
 
   private SwerveDrivePoseEstimator odometry; 
 
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  private DriveState driveState = DriveState.CLOSED_LOOP; 
+  private DriveState driveState = DriveState.CLOSED_LOOP;
+  
+  private SwerveDrivetrainConfig config; 
 
-  public Drivetrain() {
+  public Drivetrain(SwerveDrivetrainConfig config) {
+    this.config = config; 
     
     this.gyro.zeroYaw();
 
@@ -65,8 +70,8 @@ public class Drivetrain extends SubsystemBase {
         speeds, 
         gyro.getRotation2d()
       )); 
-      SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond);
-      swerveDrive(states);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, config.getMaxModuleSpeed());
+    swerveDrive(states);
   }
 
   public void swerveDrive(
