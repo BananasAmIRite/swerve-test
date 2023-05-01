@@ -1,35 +1,19 @@
 package frc.robot.lib.util.tune;
 
-public abstract class PIDTuner extends Tuner {
-    private double p;
-    private double i;
-    private double d;
+import frc.robot.lib.controllers.pid.BasePIDController; 
+public class PIDTuner<T extends BasePIDController> extends Tuner {
+    private T controller;
 
-    private double setpoint;
-
-    public PIDTuner(String name) {
-        this(name, 0, 0, 0);
-    }
-
-    public PIDTuner(String name, double initialP, double initialI, double initialD) {
+    public PIDTuner(String name, T controller) {
         super(name);
-        this.p = initialP;
-        this.i = initialI;
-        this.d = initialD;
-        addTunableDouble("P", (p) -> this.p = p);
-        addTunableDouble("I", (i) -> this.i = i);
-        addTunableDouble("D", (d) -> this.d = d);
+        addTunableDouble("P", this.controller::setP);
+        addTunableDouble("I", this.controller::setI);
+        addTunableDouble("D", this.controller::setD);
         addDisplayValue("measurement", this::getMeasurement);
-        addTunableDouble("setpoint", (setpoint) -> this.setpoint = setpoint);
+        addTunableDouble("setpoint", this.controller::setSetpoint);
     }
 
-    public abstract void supplyPIDs(double p, double i, double d, double setpoint);
-
-    public abstract double getMeasurement();
-
-    @Override
-    public void update() {
-        super.update();
-        supplyPIDs(p, i, d, setpoint);
+    public double getMeasurement() {
+        return this.controller.getMeasurement(); 
     }
 }
