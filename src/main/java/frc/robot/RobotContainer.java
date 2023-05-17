@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.SwerveTunerCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.DriverController;
 
@@ -34,6 +35,8 @@ public class RobotContainer {
   private final DriverController driverController =
       new DriverController(0);
 
+      private Command command = new SwerveTunerCommand(Constants.DrivetrainConstants.FrontLeft.kRotate, Constants.DrivetrainConstants.FrontLeft.kDrive, Constants.DrivetrainConstants.FrontLeft.kRotEncoder); 
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -53,13 +56,13 @@ public class RobotContainer {
     Pose2d res = rel2; 
     System.out.println(res);
     // driverController.setChassisSpeedsSupplier(drivetrain::getChassisSpeeds); // comment in simulation
-    drivetrain.setDefaultCommand(new RunCommand(() -> {
-      ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 
-      SmartDashboard.putNumber("x", speeds.vxMetersPerSecond); 
-      SmartDashboard.putNumber("y", speeds.vyMetersPerSecond); 
-      SmartDashboard.putNumber("rotation", speeds.omegaRadiansPerSecond); 
-      drivetrain.swerveDrive(speeds);
-    }, drivetrain));
+    // drivetrain.setDefaultCommand(new RunCommand(() -> {
+    //   ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 
+    //   SmartDashboard.putNumber("x", speeds.vxMetersPerSecond); 
+    //   SmartDashboard.putNumber("y", speeds.vyMetersPerSecond); 
+    //   SmartDashboard.putNumber("rotation", speeds.omegaRadiansPerSecond); 
+    //   drivetrain.swerveDrive(speeds);
+    // }, drivetrain));
   }
 
   /**
@@ -81,6 +84,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null; 
+    return command; 
   }
 }

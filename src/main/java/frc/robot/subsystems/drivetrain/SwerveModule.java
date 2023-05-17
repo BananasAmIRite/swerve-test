@@ -22,13 +22,11 @@ public class SwerveModule {
     private CANSparkMax turnMotor; 
     private CANSparkMax driveMotor;
     
-    private SparkMaxPIDController turnPIDController; 
+    private SwerveTurnPIDController turnPIDController; 
     private SparkMaxPIDController drivePIDController; 
 
     // represents the true, uninverted heading of the drive motor
     private CANCoder absoluteTurnEncoder;
-    
-    private RelativeEncoder turnEncoder; 
 
     private RelativeEncoder driveEncoder; 
 
@@ -44,10 +42,9 @@ public class SwerveModule {
         this.driveMotor = new CANSparkMax(kDrive, MotorType.kBrushless); 
 
         this.absoluteTurnEncoder = new CANCoder(kTurnEncoder); // this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
-        this.turnEncoder = this.turnMotor.getEncoder(); 
         this.driveEncoder = this.driveMotor.getEncoder(); 
 
-        this.turnPIDController = this.turnMotor.getPIDController(); 
+        this.turnPIDController = new SwerveTurnPIDController(kTurnEncoder, 0, 0, 0); 
         this.drivePIDController = this.driveMotor.getPIDController(); 
 
         configureMotors();
@@ -70,27 +67,29 @@ public class SwerveModule {
     }
 
     private void configureEncoders() {
-        this.turnEncoder.setPositionConversionFactor(Constants.DrivetrainConstants.kDegreesPerRot); 
-        this.turnEncoder.setVelocityConversionFactor(Constants.DrivetrainConstants.kDegreesPerSecondPerRPM);
 
-        this.turnEncoder.setPosition(this.absoluteTurnEncoder.getAbsolutePosition()); 
+        System.out.println(Constants.DrivetrainConstants.kDegreesPerRot);
         
         this.driveEncoder.setPositionConversionFactor(Constants.DrivetrainConstants.kMetersPerRot);
         this.driveEncoder.setVelocityConversionFactor(Constants.DrivetrainConstants.kMetersPerSecondPerRPM); 
     }
 
     private void configurePIDControllers() {
-        this.turnPIDController.setPositionPIDWrappingEnabled(true); 
-        this.turnPIDController.setPositionPIDWrappingMinInput(0); 
-        this.turnPIDController.setPositionPIDWrappingMinInput(360); 
-
-        this.turnPIDController.setP(Constants.DrivetrainConstants.kModuleTurn_P);
-        this.turnPIDController.setI(Constants.DrivetrainConstants.kModuleTurn_I); 
-        this.turnPIDController.setD(Constants.DrivetrainConstants.kModuleTurn_D); 
+        setTurnPID(
+            Constants.DrivetrainConstants.kModuleTurn_P, 
+            Constants.DrivetrainConstants.kModuleTurn_I, 
+            Constants.DrivetrainConstants.kModuleTurn_D
+            );
         
         this.drivePIDController.setP(Constants.DrivetrainConstants.kModuleDrive_P);
         this.drivePIDController.setI(Constants.DrivetrainConstants.kModuleDrive_I); 
         this.drivePIDController.setD(Constants.DrivetrainConstants.kModuleDrive_D); 
+    }
+
+    public void setTurnPID(double p, double i, double d) {
+        this.turnPIDController.setP(p);
+        this.turnPIDController.setI(i);
+        this.turnPIDController.setD(d);
     }
 
     public void updateState(SwerveModuleState state, DriveState driveType) {
@@ -113,11 +112,12 @@ public class SwerveModule {
     }
 
     private void updateTurnState(Rotation2d turn) {
-        turnPIDController.setReference(turn.getDegrees(), ControlType.kPosition); 
+        turnPIDController.setSetpoint(turn.getDegrees()); 
+        turnMotor.set(turnPIDController.calculate());
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(this.driveEncoder.getPosition()); 
+        return Rotation2d.fromDegrees(this.absoluteTurnEncoder.getAbsolutePosition()); 
     }
 
     public SwerveModuleState getCurrentState() {
