@@ -32,24 +32,24 @@ public final class Constants {
   public static class DrivetrainConstants {
     // Wheels
     public static class FrontLeft {
-      public static final int kRotate = 0; 
-      public static final int kDrive = 1; 
-      public static final int kRotEncoder = 0; 
+      public static final int kRotate = 9; 
+      public static final int kDrive = 2; 
+      public static final int kRotEncoder = 10; 
     }
     public static class FrontRight {
-      public static final int kRotate = 2; 
-      public static final int kDrive = 3; 
-      public static final int kRotEncoder = 2; 
+      public static final int kRotate = 3; 
+      public static final int kDrive = 4; 
+      public static final int kRotEncoder = 11; 
     }
     public static class BackLeft {
-      public static final int kRotate = 4; 
-      public static final int kDrive = 5; 
-      public static final int kRotEncoder = 4; 
+      public static final int kRotate = 5; 
+      public static final int kDrive = 6; 
+      public static final int kRotEncoder = 12; 
     }
     public static class BackRight {
-      public static final int kRotate = 6; 
+      public static final int kRotate = 8; 
       public static final int kDrive = 7; 
-      public static final int kRotEncoder = 6; 
+      public static final int kRotEncoder = 13; 
     }
 
     // Gearing & Conversions
@@ -59,7 +59,7 @@ public final class Constants {
     public static final double kMetersPerSecondPerRPM = kMetersPerRot / 60;
 
     public static final double kRotateGearRatio = 1; 
-    public static final double kDegreesPerRot = 360 / kGearRatio;
+    public static final double kDegreesPerRot = 360 / kRotateGearRatio;
     public static final double kDegreesPerSecondPerRPM = kDegreesPerRot / 60; 
 
     // Drivebase
@@ -111,7 +111,7 @@ public final class Constants {
     public static final double kModuleDrive_D = 0; 
 
     // found from sysid for one of the turn modules or tune by yourself
-    public static final double kModuleTurn_P = 0; 
+    public static final double kModuleTurn_P = 0; // 0.01; 
     public static final double kModuleTurn_I = 0; 
     public static final double kModuleTurn_D = 0; 
 
