@@ -13,7 +13,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.util.DriverController;
 
 public class SwerveModule {
 
@@ -22,7 +25,7 @@ public class SwerveModule {
     private CANSparkMax turnMotor; 
     private CANSparkMax driveMotor;
     
-    private SwerveTurnPIDController turnPIDController; 
+    public SwerveTurnPIDController turnPIDController; 
     private SparkMaxPIDController drivePIDController; 
 
     // represents the true, uninverted heading of the drive motor
@@ -44,7 +47,7 @@ public class SwerveModule {
         this.absoluteTurnEncoder = new CANCoder(kTurnEncoder); // this.turnMotor.getAbsoluteEncoder(Type.kDutyCycle); 
         this.driveEncoder = this.driveMotor.getEncoder(); 
 
-        this.turnPIDController = new SwerveTurnPIDController(kTurnEncoder, 0, 0, 0); 
+        this.turnPIDController = new SwerveTurnPIDController(absoluteTurnEncoder, 0, 0, 0); 
         this.drivePIDController = this.driveMotor.getPIDController(); 
 
         configureMotors();
@@ -87,9 +90,7 @@ public class SwerveModule {
     }
 
     public void setTurnPID(double p, double i, double d) {
-        this.turnPIDController.setP(p);
-        this.turnPIDController.setI(i);
-        this.turnPIDController.setD(d);
+        this.turnPIDController.setPID(p, i, d);
     }
 
     public void updateState(SwerveModuleState state, DriveState driveType) {
@@ -99,11 +100,13 @@ public class SwerveModule {
         if (driveType == DriveState.OPEN_LOOP) updateOpenLoopDriveState(optimizedState.speedMetersPerSecond); 
          else updateClosedLoopDriveState(optimizedState.speedMetersPerSecond);
 
-         updateTurnState(state.angle);
+         // MARK
+         updateTurnState(optimizedState.angle);
     }
 
     private void updateOpenLoopDriveState(double speed) {
         double percent = MathUtil.clamp(speed / Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond, -1, 1); 
+        System.out.println(speed + "" + DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond);
         driveMotor.set(percent);
     }
     
@@ -113,6 +116,9 @@ public class SwerveModule {
 
     private void updateTurnState(Rotation2d turn) {
         turnPIDController.setSetpoint(turn.getDegrees()); 
+        SmartDashboard.putNumber("turn pid output", turnPIDController.calculate()); 
+        SmartDashboard.putNumber("pid P", turnPIDController.getP()); 
+        SmartDashboard.putNumber("module angle", absoluteTurnEncoder.getAbsolutePosition()); 
         turnMotor.set(turnPIDController.calculate());
     }
 

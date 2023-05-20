@@ -11,16 +11,17 @@ public class SwerveTurnPIDController extends PIDController {
     private double maxOutput = 1; 
     private double minOutput = -1; 
 
-    public SwerveTurnPIDController(int id, double p, double i, double d) {
+    public SwerveTurnPIDController(CANCoder encoder, double p, double i, double d) {
         super(p, i, d);
-        this.encoder = new CANCoder(id); 
+        this.encoder = encoder; 
 
 
         enableContinuousInput(0, 360);
     }
 
     public double calculate() {
-        return MathUtil.clamp(calculate(encoder.getAbsolutePosition()),maxOutput, minOutput); 
+        // TODO: clamp this
+        return calculate(encoder.getAbsolutePosition()); 
     }
 
     public void setMaxOutput(double maxOutput) {

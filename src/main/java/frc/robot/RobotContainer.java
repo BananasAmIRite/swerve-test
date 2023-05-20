@@ -7,6 +7,8 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveTunerCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.leds.addressable.LED;
+import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 import frc.robot.util.DriverController;
 
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -35,7 +38,11 @@ public class RobotContainer {
   private final DriverController driverController =
       new DriverController(0);
 
-      private Command command = new SwerveTunerCommand(Constants.DrivetrainConstants.FrontLeft.kRotate, Constants.DrivetrainConstants.FrontLeft.kDrive, Constants.DrivetrainConstants.FrontLeft.kRotEncoder); 
+  // private Command command = new SwerveTunerCommand(Constants.DrivetrainConstants.BackLeft.kRotate, Constants.DrivetrainConstants.BackLeft.kDrive, Constants.DrivetrainConstants.BackLeft.kRotEncoder); 
+
+  private SendableChooser<LEDPattern> patterns = new SendableChooser<>(); 
+
+  private final LED leds = new LED(); 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -56,13 +63,17 @@ public class RobotContainer {
     Pose2d res = rel2; 
     System.out.println(res);
     // driverController.setChassisSpeedsSupplier(drivetrain::getChassisSpeeds); // comment in simulation
-    // drivetrain.setDefaultCommand(new RunCommand(() -> {
-    //   ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 
-    //   SmartDashboard.putNumber("x", speeds.vxMetersPerSecond); 
-    //   SmartDashboard.putNumber("y", speeds.vyMetersPerSecond); 
-    //   SmartDashboard.putNumber("rotation", speeds.omegaRadiansPerSecond); 
-    //   drivetrain.swerveDrive(speeds);
-    // }, drivetrain));
+    drivetrain.setDefaultCommand(new RunCommand(() -> {
+      ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 
+      SmartDashboard.putNumber("x", speeds.vxMetersPerSecond); 
+      SmartDashboard.putNumber("y", speeds.vyMetersPerSecond); 
+      SmartDashboard.putNumber("rotation", speeds.omegaRadiansPerSecond); 
+      drivetrain.swerveDrive(speeds);
+    }, drivetrain));
+
+    patterns.addOption("Idle", Constants.LEDs.Patterns.kIdle);
+    patterns.addOption("Rainbow", Constants.LEDs.Patterns.kBalanceFinished);
+    patterns.addOption("Dead", Constants.LEDs.Patterns.kDead);
   }
 
   /**
@@ -78,12 +89,17 @@ public class RobotContainer {
 
   }
 
+  public void doSendables() {
+    SmartDashboard.putData(patterns);
+    leds.setPattern(patterns.getSelected());
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return command; 
+    return null; 
   }
 }

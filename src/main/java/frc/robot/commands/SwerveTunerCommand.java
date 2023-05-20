@@ -38,6 +38,8 @@ public class SwerveTunerCommand extends CommandBase {
         ), SwerveModule.DriveState.OPEN_LOOP);
 
         SmartDashboard.putNumber("SwerveTurnMeasurement", module.getAngle().getDegrees()); 
+        SmartDashboard.putNumber("SwerveError", module.turnPIDController.getPositionError()); 
+        // SmartDashboard.putNumber("Swerve", module.turnPIDController.get); 
     }
 
     @Override

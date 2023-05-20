@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.SwerveModule.DriveState;
@@ -26,7 +27,7 @@ public class Drivetrain extends SubsystemBase {
 
   private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  private DriveState driveState = DriveState.CLOSED_LOOP; 
+  private DriveState driveState = DriveState.OPEN_LOOP; 
 
   public Drivetrain() {
     
@@ -38,6 +39,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     this.odometry.update(gyro.getRotation2d(), getPositions()); 
+    SmartDashboard.putNumber("gyro angle", this.gyro.getRotation2d().getDegrees()); 
   }
 
   @Override
@@ -57,13 +59,16 @@ public class Drivetrain extends SubsystemBase {
   public void swerveDrive(ChassisSpeeds speeds) {
     Pose2d target = new Pose2d(speeds.vxMetersPerSecond * Constants.kLoopDuration, speeds.vyMetersPerSecond * Constants.kLoopDuration, Rotation2d.fromRadians(speeds.omegaRadiansPerSecond * Constants.kLoopDuration));
 
-    Twist2d twist = new Pose2d().log(target); 
 
-    speeds = new ChassisSpeeds(twist.dx * Constants.kLoopDuration, twist.dy * Constants.kLoopDuration, twist.dtheta * Constants.kLoopDuration); 
+    // TODO: make these work but may not be necessary
+    // Twist2d twist = new Pose2d().log(target); 
+
+    // speeds = new ChassisSpeeds(twist.dx * Constants.kLoopDuration, twist.dy * Constants.kLoopDuration, twist.dtheta * Constants.kLoopDuration); 
 
     SwerveModuleState[] states = Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
         speeds, 
-        gyro.getRotation2d()
+        // TODO: add gyro rotation
+        new Rotation2d() // gyro.getRotation2d()
       )); 
       SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond);
       swerveDrive(states);

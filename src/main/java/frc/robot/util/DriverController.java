@@ -65,10 +65,16 @@ public class DriverController extends Controller {
         double speedStrafe = ControllerUtils.squareKeepSign(throttleStrafe) * maxSpeed.get(); 
         double speedTurn = ControllerUtils.squareKeepSign(throttleTurn) * maxRotation.get(); 
 
+        // TODO: add in rate limiters
+        // ChassisSpeeds speeds = new ChassisSpeeds(
+        //     forwardRateLimiter.calculate(speedForward), 
+        //     strafeRateLimiter.calculate(speedStrafe), 
+        //     turnRateLimiter.calculate(speedTurn)
+        // ); 
         ChassisSpeeds speeds = new ChassisSpeeds(
-            forwardRateLimiter.calculate(speedForward), 
-            strafeRateLimiter.calculate(speedStrafe), 
-            turnRateLimiter.calculate(speedTurn)
+            speedForward, 
+            speedStrafe, 
+            speedTurn
         ); 
 
         ChassisSpeeds oldSpeeds = chassisSpeedsSupplier.get(); 

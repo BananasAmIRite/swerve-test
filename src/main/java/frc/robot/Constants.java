@@ -10,7 +10,10 @@ import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstrain
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.subsystems.leds.addressable.patterns.FadeLEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
+import frc.robot.subsystems.leds.addressable.patterns.MorseCodePattern;
+import frc.robot.subsystems.leds.addressable.patterns.RainbowPattern;
 import frc.robot.subsystems.leds.addressable.patterns.SolidLEDPattern;
 import frc.robot.trajectory.TrajectoryCreator;
 
@@ -41,12 +44,12 @@ public final class Constants {
       public static final int kDrive = 4; 
       public static final int kRotEncoder = 11; 
     }
-    public static class BackLeft {
+    public static class BackRight {
       public static final int kRotate = 5; 
       public static final int kDrive = 6; 
       public static final int kRotEncoder = 12; 
     }
-    public static class BackRight {
+    public static class BackLeft {
       public static final int kRotate = 8; 
       public static final int kDrive = 7; 
       public static final int kRotEncoder = 13; 
@@ -54,7 +57,7 @@ public final class Constants {
 
     // Gearing & Conversions
     public static final double kGearRatio = 6.8; 
-    public static final double kWheelRadiusInches = 3; 
+    public static final double kWheelRadiusInches = 1.5; 
     public static final double kMetersPerRot = Units.inchesToMeters(2 * Math.PI * kWheelRadiusInches / kGearRatio);
     public static final double kMetersPerSecondPerRPM = kMetersPerRot / 60;
 
@@ -63,8 +66,8 @@ public final class Constants {
     public static final double kDegreesPerSecondPerRPM = kDegreesPerRot / 60; 
 
     // Drivebase
-    public static final double kTrackWidthMeters = 0.75; 
-    public static final double kWheelBaseMeters = 1.0; 
+    public static final double kTrackWidthMeters = Units.inchesToMeters(17.5); 
+    public static final double kWheelBaseMeters = Units.inchesToMeters(17.5); 
 
     // Kinematics
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics( // TODO: may need to switch up
@@ -87,9 +90,10 @@ public final class Constants {
     public static final double kMaxAttainableRotationRadPerSecond = kMaxAttainableSpeedMetersPerSecond /
     Math.hypot(kTrackWidthMeters / 2.0, kWheelBaseMeters / 2.0); // max rotation of robot
     
-    public static final double kMaxSpeedMetersPerSecond = kMaxAttainableSpeedMetersPerSecond; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
+    // TODO: tune these
+    public static final double kMaxSpeedMetersPerSecond = 2.54; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
     public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 1.0; // max acceleration of robot (accelerate to max speed in 1 second)
-    public static final double kMaxRotationRadPerSecond = kMaxAttainableRotationRadPerSecond; 
+    public static final double kMaxRotationRadPerSecond = Math.PI; 
     public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration of robot
 
 
@@ -111,9 +115,9 @@ public final class Constants {
     public static final double kModuleDrive_D = 0; 
 
     // found from sysid for one of the turn modules or tune by yourself
-    public static final double kModuleTurn_P = 0; // 0.01; 
+    public static final double kModuleTurn_P = 0.0039; // 0.01; 
     public static final double kModuleTurn_I = 0; 
-    public static final double kModuleTurn_D = 0; 
+    public static final double kModuleTurn_D = 0.0017; 
 
     // turn in place pid
     public static final double kTurn_P = 0; 
@@ -153,7 +157,7 @@ public final class Constants {
   public static class LEDs {
     public static final Color kDefaultColor = Color.kOrange;
 
-    public static final int kLedPort = 0; 
+    public static final int kLedPort = 9; 
     public static final int kLedLength = 40; 
 
     public static final int kLed1Start = 0; 
@@ -163,6 +167,14 @@ public final class Constants {
 
     public static final class Patterns {
       public static final LEDPattern kDefault = new SolidLEDPattern(Color.kOrange); 
+      public static final LEDPattern kIdle = new FadeLEDPattern(2.5, Color.kWhite, Color.kOrange); 
+      public static final LEDPattern kCube = new SolidLEDPattern(Color.kPurple); 
+      public static final LEDPattern kCone = new SolidLEDPattern(Color.kYellow); 
+      public static final LEDPattern kDead = new MorseCodePattern(Color.kRed, Color.kBlue, "sos"); 
+      public static final LEDPattern kDeadAlternate = new FadeLEDPattern(1, Color.kRed, Color.kBlack); 
+      public static final LEDPattern kBalanceFinished = new RainbowPattern(0.5); 
+      public static final LEDPattern kAllianceRed = new SolidLEDPattern(Color.kRed); 
+      public static final LEDPattern kAllianceBlue = new SolidLEDPattern(Color.kBlue); 
     }
 }
 }
