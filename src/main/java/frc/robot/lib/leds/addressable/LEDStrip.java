@@ -1,7 +1,7 @@
-package frc.robot.subsystems.leds.addressable;
+package frc.robot.lib.leds.addressable;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
+import frc.robot.lib.leds.addressable.patterns.LEDPattern;
 
 public class LEDStrip {
     public AddressableLEDBufferSection ledBuffer;

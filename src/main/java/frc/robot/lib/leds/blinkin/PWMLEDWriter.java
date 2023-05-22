@@ -1,4 +1,4 @@
-package frc.robot.subsystems.leds.blinkin;
+package frc.robot.lib.leds.blinkin;
 
 public class PWMLEDWriter extends BlinkinLEDWriter {
 

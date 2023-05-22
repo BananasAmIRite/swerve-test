@@ -11,8 +11,8 @@ import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.lib.drive.swerve.SwerveDrivetrainConfig;
 import frc.robot.lib.drive.swerve.config.Mk4SwerveModuleConfig;
-import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
-import frc.robot.subsystems.leds.addressable.patterns.SolidLEDPattern;
+import frc.robot.lib.leds.addressable.patterns.LEDPattern;
+import frc.robot.lib.leds.addressable.patterns.SolidLEDPattern;
 import frc.robot.trajectory.TrajectoryCreator;
 
 /**

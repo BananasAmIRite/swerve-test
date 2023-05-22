@@ -1,4 +1,4 @@
-package frc.robot.subsystems.leds.blinkin;
+package frc.robot.lib.leds.blinkin;
 
 import edu.wpi.first.wpilibj.Timer;
 

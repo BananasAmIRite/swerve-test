@@ -1,7 +1,7 @@
-package frc.robot.subsystems.leds.addressable.patterns;
+package frc.robot.lib.leds.addressable.patterns;
 
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
+import frc.robot.lib.leds.addressable.AddressableLEDBufferSection;
 
 public class EscalatingRandomColorPattern extends LEDPattern {
 

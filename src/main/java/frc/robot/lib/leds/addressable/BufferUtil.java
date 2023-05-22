@@ -1,4 +1,4 @@
-package frc.robot.subsystems.leds.addressable;
+package frc.robot.lib.leds.addressable;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;

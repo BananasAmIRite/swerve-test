@@ -1,6 +1,6 @@
-package frc.robot.subsystems.leds.addressable.patterns;
+package frc.robot.lib.leds.addressable.patterns;
 
-import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
+import frc.robot.lib.leds.addressable.AddressableLEDBufferSection;
 
 public class RainbowPattern extends LEDPattern {
 

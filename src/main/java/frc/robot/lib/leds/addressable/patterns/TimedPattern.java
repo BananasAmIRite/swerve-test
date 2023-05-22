@@ -1,11 +1,11 @@
-package frc.robot.subsystems.leds.addressable.patterns;
+package frc.robot.lib.leds.addressable.patterns;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
+import frc.robot.lib.leds.addressable.AddressableLEDBufferSection;
 
 public class TimedPattern extends LEDPattern {
     private List<TimedLEDPattern> patterns; 
