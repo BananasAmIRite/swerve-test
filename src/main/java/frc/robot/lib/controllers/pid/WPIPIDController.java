@@ -4,18 +4,18 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 
-public class WPIPIDController extends BasePIDController {
-
-    private PIDController controller; 
+public class WPIPIDController extends PIDController implements BasePIDController {
 
     private Supplier<Double> measurement; 
 
+    private double output = 0; 
+
     public WPIPIDController(Supplier<Double> measurement) {
-        this(new PIDController(0, 0, 0), measurement); 
+        this(0, 0, 0, measurement); 
     }
 
-    public WPIPIDController(PIDController pidController, Supplier<Double> measurement) {
-        this.controller = pidController; 
+    public WPIPIDController(double p, double i, double d, Supplier<Double> measurement) {
+        super(p, i, d); 
         this.measurement = measurement; 
     }
 
@@ -25,38 +25,13 @@ public class WPIPIDController extends BasePIDController {
     }
 
     @Override
-    public double getP() {
-        return this.controller.getP(); 
+    public void update() {
+        this.output = this.calculate(measurement.get()); 
     }
 
     @Override
-    public double getI() {
-        return this.controller.getI(); 
-    }
-
-    @Override
-    public double getD() {
-        return this.controller.getD(); 
-    }
-
-    @Override
-    public void setP(double p) {
-        this.controller.setP(p); 
-    }
-
-    @Override
-    public void setI(double i) {
-        this.controller.setI(i); 
-    }
-
-    @Override
-    public void setD(double d) {
-        this.controller.setD(d); 
-    }
-
-    @Override
-    public void setSetpoint(double setpoint) {
-        this.controller.setSetpoint(setpoint);
+    public double getOutput() {
+        return this.output; 
     }
     
 }

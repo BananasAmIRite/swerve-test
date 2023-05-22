@@ -6,7 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 
-public class SparkPIDController extends BasePIDController {
+public class SparkPIDController implements BasePIDController {
 
     private CANSparkMax motor; 
     private SparkMaxPIDController controller; 
@@ -60,6 +60,16 @@ public class SparkPIDController extends BasePIDController {
     @Override
     public void setSetpoint(double setpoint) {
         this.controller.setReference(setpoint, this.controlType); 
+    }
+
+    @Override
+    public double getOutput() {
+        return this.motor.get(); 
+    }
+
+    @Override
+    public void update() {
+        
     }
     
 }

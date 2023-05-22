@@ -30,11 +30,12 @@ public class SwerveDrivetrain extends DrivetrainBase {
         this.config = config;
 
         setupModules();
-        setupKinematics();
 
         this.gyro.zeroYaw();
 
-        this.odometry = new SwerveDrivePoseEstimator(Constants.DrivetrainConstants.kDriveKinematics, gyro.getRotation2d(), getPositions(), new Pose2d()); 
+        this.kinematics = config.getKinematics(); 
+
+        this.odometry = new SwerveDrivePoseEstimator(kinematics, gyro.getRotation2d(), getPositions(), new Pose2d()); 
     }
 
     private void setupModules() {
@@ -45,18 +46,6 @@ public class SwerveDrivetrain extends DrivetrainBase {
             SwerveModuleConfig modConfig = moduleConfigs.get(i); 
             this.modules[i] = new SwerveModule(modConfig); 
         }
-    }
-
-    private void setupKinematics() {
-        List<Translation2d> moduleTranslations = config.getModuleTranslations(); 
-
-        Translation2d[] translations = new Translation2d[moduleTranslations.size()];
-
-        for (int i = 0; i < moduleTranslations.size(); i++) {
-            translations[i] = moduleTranslations.get(i); 
-        }
-
-        this.kinematics = new SwerveDriveKinematics(translations); 
     }
 
     @Override
@@ -73,13 +62,13 @@ public class SwerveDrivetrain extends DrivetrainBase {
     }
 
     public void drive(ChassisSpeeds speeds) {
-        Pose2d target = new Pose2d(speeds.vxMetersPerSecond * Constants.kLoopDuration, speeds.vyMetersPerSecond * Constants.kLoopDuration, Rotation2d.fromRadians(speeds.omegaRadiansPerSecond * Constants.kLoopDuration));
+        // Pose2d target = new Pose2d(speeds.vxMetersPerSecond * Constants.kLoopDuration, speeds.vyMetersPerSecond * Constants.kLoopDuration, Rotation2d.fromRadians(speeds.omegaRadiansPerSecond * Constants.kLoopDuration));
     
-        Twist2d twist = new Pose2d().log(target); 
+        // Twist2d twist = new Pose2d().log(target); 
     
-        speeds = new ChassisSpeeds(twist.dx * Constants.kLoopDuration, twist.dy * Constants.kLoopDuration, twist.dtheta * Constants.kLoopDuration); 
+        // speeds = new ChassisSpeeds(twist.dx * Constants.kLoopDuration, twist.dy * Constants.kLoopDuration, twist.dtheta * Constants.kLoopDuration); 
     
-        SwerveModuleState[] states = Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
             speeds, 
             gyro.getRotation2d()
           )); 
@@ -123,7 +112,7 @@ public class SwerveDrivetrain extends DrivetrainBase {
   }
 
     public void brake() {
-        drive(Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds()));
+        drive(kinematics.toSwerveModuleStates(new ChassisSpeeds()));
     }
 
     @Override

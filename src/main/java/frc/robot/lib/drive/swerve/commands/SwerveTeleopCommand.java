@@ -2,9 +2,6 @@ package frc.robot.lib.drive.swerve.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Constants;
 import frc.robot.lib.drive.DriveCommand;
 import frc.robot.lib.drive.DriveSignal;
 import frc.robot.lib.drive.swerve.SwerveDrivetrain;
@@ -58,17 +55,20 @@ public class SwerveTeleopCommand extends DriveCommand {
         double speedTurn = ControllerUtils.squareKeepSign(throttleTurn) * maxRotation;
 
         ChassisSpeeds speeds = new ChassisSpeeds(
-                forwardRateLimiter.calculate(speedForward),
-                strafeRateLimiter.calculate(speedStrafe),
-                turnRateLimiter.calculate(speedTurn)
+            speedForward, 
+            speedStrafe,
+            speedTurn
+                // forwardRateLimiter.calculate(speedForward),
+                // strafeRateLimiter.calculate(speedStrafe),
+                // turnRateLimiter.calculate(speedTurn)
         );
 
-        ChassisSpeeds oldSpeeds = chassisSpeedsSupplier.get();
-        if (oldSpeeds != null) {
-            forwardRateLimiter.reset(oldSpeeds.vxMetersPerSecond);
-            strafeRateLimiter.reset(oldSpeeds.vyMetersPerSecond);
-            turnRateLimiter.reset(oldSpeeds.omegaRadiansPerSecond);
-        }
+        // ChassisSpeeds oldSpeeds = chassisSpeedsSupplier.get();
+        // if (oldSpeeds != null) {
+        //     forwardRateLimiter.reset(oldSpeeds.vxMetersPerSecond);
+        //     strafeRateLimiter.reset(oldSpeeds.vyMetersPerSecond);
+        //     turnRateLimiter.reset(oldSpeeds.omegaRadiansPerSecond);
+        // }
 
         return new DriveSignal(speeds, true);
     }

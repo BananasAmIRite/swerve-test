@@ -22,8 +22,8 @@ public class SwerveModule {
     private final CANSparkMax steerMotor;
     private final CANSparkMax driveMotor;
     
-    private final SparkMaxPIDController turnPIDController;
-    private final SparkMaxPIDController drivePIDController;
+    private final SwerveTurnPIDController steerPIDController; 
+    private final SparkMaxPIDController drivePIDController; 
 
     // represents the true, uninverted heading of the drive motor
     private final CANCoder absoluteSteerEncoder;
@@ -49,7 +49,7 @@ public class SwerveModule {
         this.steerEncoder = new Encoder(this.steerMotor.getEncoder());
         this.driveEncoder = new Encoder(this.driveMotor.getEncoder());
 
-        this.turnPIDController = this.steerMotor.getPIDController(); 
+        this.steerPIDController = new SwerveTurnPIDController(this.absoluteSteerEncoder, 0, 0, 0); 
         this.drivePIDController = this.driveMotor.getPIDController(); 
 
         this.config = config; 
@@ -85,17 +85,20 @@ public class SwerveModule {
     }
 
     private void configurePIDControllers() {
-        this.turnPIDController.setPositionPIDWrappingEnabled(true); 
-        this.turnPIDController.setPositionPIDWrappingMinInput(0); 
-        this.turnPIDController.setPositionPIDWrappingMinInput(360); 
-
-        this.turnPIDController.setP(Constants.DrivetrainConstants.kModuleTurn_P);
-        this.turnPIDController.setI(Constants.DrivetrainConstants.kModuleTurn_I); 
-        this.turnPIDController.setD(Constants.DrivetrainConstants.kModuleTurn_D); 
+        // TODO: dont do this
+        setTurnPID(
+            Constants.DrivetrainConstants.kModuleTurn_P, 
+            Constants.DrivetrainConstants.kModuleTurn_I, 
+            Constants.DrivetrainConstants.kModuleTurn_D
+            );
         
         this.drivePIDController.setP(Constants.DrivetrainConstants.kModuleDrive_P);
         this.drivePIDController.setI(Constants.DrivetrainConstants.kModuleDrive_I); 
         this.drivePIDController.setD(Constants.DrivetrainConstants.kModuleDrive_D); 
+    }
+
+    public void setTurnPID(double p, double i, double d) {
+        this.steerPIDController.setPID(p, i, d);
     }
 
     public void updateState(SwerveModuleState state, DriveState driveType) {
@@ -105,7 +108,7 @@ public class SwerveModule {
         if (driveType == DriveState.OPEN_LOOP) updateOpenLoopDriveState(optimizedState.speedMetersPerSecond); 
          else updateClosedLoopDriveState(optimizedState.speedMetersPerSecond);
 
-         updateTurnState(state.angle);
+         updateTurnState(optimizedState.angle);
     }
 
     private void updateOpenLoopDriveState(double speed) {
@@ -118,7 +121,8 @@ public class SwerveModule {
     }
 
     private void updateTurnState(Rotation2d turn) {
-        turnPIDController.setReference(turn.getDegrees(), ControlType.kPosition); 
+        steerPIDController.setSetpoint(turn.getDegrees()); 
+        steerMotor.set(steerPIDController.calculate());
     }
 
     public Rotation2d getAngle() {
