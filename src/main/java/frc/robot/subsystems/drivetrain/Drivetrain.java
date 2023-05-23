@@ -40,6 +40,11 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     this.odometry.update(gyro.getRotation2d(), getPositions()); 
     SmartDashboard.putNumber("gyro angle", this.gyro.getRotation2d().getDegrees()); 
+
+    try {
+    SmartDashboard.putNumber("FL target speed", frontLeft.getReferenceState().speedMetersPerSecond); 
+    SmartDashboard.putNumber("FL speed", frontLeft.getCurrentState().speedMetersPerSecond); 
+    } catch(Exception err) {}
   }
 
   @Override
@@ -61,14 +66,14 @@ public class Drivetrain extends SubsystemBase {
 
 
     // TODO: make these work but may not be necessary
-    // Twist2d twist = new Pose2d().log(target); 
+    Twist2d twist = new Pose2d().log(target); 
 
-    // speeds = new ChassisSpeeds(twist.dx * Constants.kLoopDuration, twist.dy * Constants.kLoopDuration, twist.dtheta * Constants.kLoopDuration); 
+    speeds = new ChassisSpeeds(twist.dx / Constants.kLoopDuration, twist.dy / Constants.kLoopDuration, twist.dtheta / Constants.kLoopDuration); 
 
     SwerveModuleState[] states = Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
         speeds, 
         // TODO: add gyro rotation
-        new Rotation2d() // gyro.getRotation2d()
+        gyro.getRotation2d()
       )); 
       SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond);
       swerveDrive(states);
@@ -115,6 +120,10 @@ public class Drivetrain extends SubsystemBase {
     // Returns the direction the robot is facing in degrees from -180 to 180 degrees.
     public double getHeading() {
       return gyro.getRotation2d().getDegrees();
+  }
+
+  public void zeroYaw() {
+    gyro.zeroYaw();
   }
 
   public double getYaw() {

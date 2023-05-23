@@ -13,10 +13,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.util.DriverController;
 
 public class SwerveModule {
 
@@ -100,13 +97,11 @@ public class SwerveModule {
         if (driveType == DriveState.OPEN_LOOP) updateOpenLoopDriveState(optimizedState.speedMetersPerSecond); 
          else updateClosedLoopDriveState(optimizedState.speedMetersPerSecond);
 
-         // MARK
          updateTurnState(optimizedState.angle);
     }
 
     private void updateOpenLoopDriveState(double speed) {
         double percent = MathUtil.clamp(speed / Constants.DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond, -1, 1); 
-        System.out.println(speed + "" + DrivetrainConstants.kMaxAttainableSpeedMetersPerSecond);
         driveMotor.set(percent);
     }
     
@@ -116,9 +111,6 @@ public class SwerveModule {
 
     private void updateTurnState(Rotation2d turn) {
         turnPIDController.setSetpoint(turn.getDegrees()); 
-        SmartDashboard.putNumber("turn pid output", turnPIDController.calculate()); 
-        SmartDashboard.putNumber("pid P", turnPIDController.getP()); 
-        SmartDashboard.putNumber("module angle", absoluteTurnEncoder.getAbsolutePosition()); 
         turnMotor.set(turnPIDController.calculate());
     }
 
@@ -127,11 +119,11 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getCurrentState() {
-        return new SwerveModuleState(this.driveEncoder.getVelocity(), Rotation2d.fromDegrees(this.driveEncoder.getPosition())); 
+        return new SwerveModuleState(this.driveEncoder.getVelocity(), getAngle()); 
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(this.driveEncoder.getPosition(), Rotation2d.fromDegrees(this.driveEncoder.getPosition())); 
+        return new SwerveModulePosition(this.driveEncoder.getPosition(), getAngle()); 
     }
 
     public SwerveModuleState getReferenceState() {

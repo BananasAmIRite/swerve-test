@@ -21,7 +21,7 @@ public class SwerveTurnPIDController extends PIDController {
 
     public double calculate() {
         // TODO: clamp this
-        return calculate(encoder.getAbsolutePosition()); 
+        return MathUtil.clamp(calculate(encoder.getAbsolutePosition()), minOutput, maxOutput); 
     }
 
     public void setMaxOutput(double maxOutput) {
