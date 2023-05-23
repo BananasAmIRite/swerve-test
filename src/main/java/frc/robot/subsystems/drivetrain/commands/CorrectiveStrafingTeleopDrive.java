@@ -38,6 +38,8 @@ public class CorrectiveStrafingTeleopDrive extends CommandBase {
         // TODO: plus or minus 90 degrees?
         double correctiveStrafeAngle = inputStrafeAngle - 0.5 * Math.PI * Math.signum(inputOmega);
 
+        SmartDashboard.putNumber("input-strafe-speed", inputStrafeSpeed);
+        SmartDashboard.putNumber("input-omega", inputOmega);
         SmartDashboard.putNumber("input-strafe-angle", inputStrafeAngle);
         SmartDashboard.putNumber("corrective-strafe-angle", correctiveStrafeAngle);
 
