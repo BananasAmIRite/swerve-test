@@ -7,6 +7,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.ControllerUtils;
 import frc.robot.util.DriverController;
+import frc.robot.util.ControllerUtils;
 
 public class CorrectiveStrafingTeleopDrive extends CommandBase {
     DriverController controller;
@@ -23,8 +24,8 @@ public class CorrectiveStrafingTeleopDrive extends CommandBase {
     public void execute(){
         // get inputs, scale appropriately, calculate desired speed
         double inputOmega = -ControllerUtils.squareKeepSign(this.controller.getRightStickX()) * this.controller.getMaxRotation();
-        double inputStrafeX = -ControllerUtils.squareKeepSign(this.controller.getLeftStickX()) * this.controller.getMaxSpeed();
-        double inputStrafeZ = -ControllerUtils.squareKeepSign(this.controller.getLeftStickY()) * this.controller.getMaxSpeed();
+        double inputStrafeX = -ControllerUtils.squareKeepSign(this.controller.getLeftStickX()) * this.controller.getMaxSpeed(); // horizontal
+        double inputStrafeZ = -ControllerUtils.squareKeepSign(this.controller.getLeftStickY()) * this.controller.getMaxSpeed(); // vertical
         double inputStrafeSpeed = Math.sqrt(inputStrafeX * inputStrafeX + inputStrafeZ * inputStrafeZ);
 
         // ! uncomment after testing

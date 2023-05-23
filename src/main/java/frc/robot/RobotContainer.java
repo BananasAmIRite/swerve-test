@@ -10,6 +10,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.CorrectiveStrafingTeleopDrive;
 import frc.robot.subsystems.leds.addressable.LED;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
+import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -91,7 +93,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
+    Controller.onPress(driverController.Y, new InstantCommand(() -> {
+      drivetrain.zeroYaw();
+    }));
   }
 
   public void doSendables() {

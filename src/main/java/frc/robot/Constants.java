@@ -91,7 +91,7 @@ public final class Constants {
     Math.hypot(kTrackWidthMeters / 2.0, kWheelBaseMeters / 2.0); // max rotation of robot
     
     // TODO: tune these
-    public static final double kMaxSpeedMetersPerSecond = 2.54; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
+    public static final double kMaxSpeedMetersPerSecond = 1.0; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
     public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 1.0; // max acceleration of robot (accelerate to max speed in 1 second)
     public static final double kMaxRotationRadPerSecond = Math.PI; 
     public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration of robot
@@ -131,8 +131,8 @@ public final class Constants {
     public static final double kTurnVelocityThreshold = 0; 
 
     // TODO: tune these
-    public static final int kDriveCurrentLimit = 60; 
-    public static final int kTurnCurrentLimit = 30; 
+    public static final int kDriveCurrentLimit = 40; 
+    public static final int kTurnCurrentLimit = 20; 
 
     public static final double kForwardSlewRate = kMaxAccelerationMetersPerSecondSquared; 
     public static final double kStrafeSlewRate = kMaxAccelerationMetersPerSecondSquared; 
@@ -145,9 +145,9 @@ public final class Constants {
     public static final double kDrive_D = DrivetrainConstants.kModuleDrive_D;
 
     // drivetrain angular sysid
-    public static final double kOmega_P = 0; 
-    public static final double kOmega_I = 0; 
-    public static final double kOmega_D = 0; 
+    public static final double kOmega_P = DrivetrainConstants.kTurn_P; 
+    public static final double kOmega_I = DrivetrainConstants.kTurn_I; 
+    public static final double kOmega_D = DrivetrainConstants.kTurn_D; 
 
     public static final double kMaxVelocityMetersPerSecond = 3.21; 
     public static final double kMaxAccelerationMetersPerSecondSquared = 2.54; 
@@ -161,16 +161,16 @@ public final class Constants {
     public static final Color kDefaultColor = Color.kOrange;
 
     public static final int kLedPort = 9; 
-    public static final int kLedLength = 40; 
+    public static final int kLedLength = 144; 
 
     public static final int kLed1Start = 0; 
-    public static final int kLed1End = 20; 
-    public static final int kLed2Start = 20; 
-    public static final int kLed2End = 40; 
+    public static final int kLed1End = 100; 
+    public static final int kLed2Start = 100; 
+    public static final int kLed2End = 144; 
 
     public static final class Patterns {
       public static final LEDPattern kDefault = new SolidLEDPattern(Color.kOrange); 
-      public static final LEDPattern kIdle = new FadeLEDPattern(2.5, Color.kWhite, Color.kOrange); 
+      public static final LEDPattern kIdle = new FadeLEDPattern(2.5, Color.kWhite, Color.kOrangeRed); 
       public static final LEDPattern kCube = new SolidLEDPattern(Color.kPurple); 
       public static final LEDPattern kCone = new SolidLEDPattern(Color.kYellow); 
       public static final LEDPattern kDead = new MorseCodePattern(Color.kRed, Color.kBlue, "sos"); 
