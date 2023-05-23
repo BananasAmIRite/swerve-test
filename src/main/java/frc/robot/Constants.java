@@ -115,9 +115,9 @@ public final class Constants {
     public static final double kModuleDrive_D = 0; 
 
     // found from sysid for one of the turn modules or tune by yourself
-    public static final double kModuleTurn_P = 0.0039; // 0.01; 
+    public static final double kModuleTurn_P = 0.01; // 0.0039; // 0.01; 
     public static final double kModuleTurn_I = 0; 
-    public static final double kModuleTurn_D = 0.0017; 
+    public static final double kModuleTurn_D = 0.00017; // 0.0017 <- this was the problem with jittering
 
     // turn in place pid
     public static final double kTurn_P = 0; 
