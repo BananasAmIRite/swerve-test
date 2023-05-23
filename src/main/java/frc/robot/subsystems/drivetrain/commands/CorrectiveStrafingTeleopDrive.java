@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.DriverController;
+import frc.robot.util.ControllerUtils;
 
 public class CorrectiveStrafingTeleopDrive extends CommandBase {
     DriverController controller;
@@ -20,9 +21,9 @@ public class CorrectiveStrafingTeleopDrive extends CommandBase {
     @Override
     public void execute(){
         // get inputs, scale appropriately, calculate desired speed
-        double inputOmega = -Math.pow(this.controller.getRightStickX(), 2) * this.controller.getMaxRotation();
-        double inputStrafeX = -Math.pow(this.controller.getLeftStickX(), 2) * this.controller.getMaxSpeed();
-        double inputStrafeZ = -Math.pow(this.controller.getLeftStickY(), 2) * this.controller.getMaxSpeed();
+        double inputOmega = -ControllerUtils.squareKeepSign(this.controller.getRightStickX()) * this.controller.getMaxRotation();
+        double inputStrafeX = -ControllerUtils.squareKeepSign(this.controller.getLeftStickX()) * this.controller.getMaxSpeed(); // horizontal
+        double inputStrafeZ = -ControllerUtils.squareKeepSign(this.controller.getLeftStickY()) * this.controller.getMaxSpeed(); // vertical
         double inputStrafeSpeed = Math.sqrt(inputStrafeX * inputStrafeX + inputStrafeZ * inputStrafeZ);
 
         // calculate the angle of input strafe, rotate 90 degrees in opposite direction of turn
