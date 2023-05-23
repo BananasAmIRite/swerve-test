@@ -17,6 +17,8 @@ public class CorrectiveStrafingTeleopDrive extends CommandBase {
         this.controller = controller;
         this.drivetrain = drivetrain;
 
+        SmartDashboard.putNumber("corrective kP", SmartDashboard.getNumber("corrective kP", Constants.DrivetrainConstants.kCorrectiveStrafe_P));
+
         this.addRequirements(drivetrain);
     }
 
@@ -28,41 +30,35 @@ public class CorrectiveStrafingTeleopDrive extends CommandBase {
         double inputStrafeZ = -ControllerUtils.squareKeepSign(this.controller.getLeftStickY()) * this.controller.getMaxSpeed(); // vertical
         double inputStrafeSpeed = Math.sqrt(inputStrafeX * inputStrafeX + inputStrafeZ * inputStrafeZ);
 
-        // ! uncomment after testing
-        // if(inputOmega == 0 || inputStrafeSpeed == 0){
-        //     this.drivetrain.swerveDrive(new ChassisSpeeds(inputStrafeZ, inputStrafeX, inputOmega));
-        //     return;
-        // }
+        if(inputOmega == 0 || inputStrafeSpeed == 0){
+            this.drivetrain.swerveDrive(new ChassisSpeeds(inputStrafeZ, inputStrafeX, inputOmega));
+            return;
+        }
 
         // calculate the angle of input strafe, rotate 90 degrees in opposite direction of turn
         double inputStrafeAngle = Math.atan2(inputStrafeZ, inputStrafeX);
         // TODO: plus or minus 90 degrees?
-        double correctiveStrafeAngle = inputStrafeAngle - 0.5 * Math.PI * Math.signum(inputOmega);
+        double correctiveStrafeAngle = inputStrafeAngle + 0.5 * Math.PI * Math.signum(inputOmega);
 
         SmartDashboard.putNumber("input-strafe-speed", inputStrafeSpeed);
         SmartDashboard.putNumber("input-omega", inputOmega);
         SmartDashboard.putNumber("input-strafe-angle", inputStrafeAngle);
         SmartDashboard.putNumber("corrective-strafe-angle", correctiveStrafeAngle);
 
-        // ! testing
-        this.drivetrain.swerveDrive(new ChassisSpeeds(inputStrafeZ, inputStrafeX, inputOmega));
-        return;
+        double kP = SmartDashboard.getNumber("corrective kP", 0);
 
-        // ! uncomment after testing
-        /*
-            // corrective strafe speed should be proportional to both the desired strafe speed as well as the desired angular speed
-            double correctiveStrafeSpeed = Constants.DrivetrainConstants.kCorrectiveStrafe_P * inputStrafeSpeed * Math.abs(inputOmega);
-            double correctiveStrafeX = correctiveStrafeSpeed * Math.cos(correctiveStrafeAngle);
-            double correctiveStrafeZ = correctiveStrafeSpeed * Math.sin(correctiveStrafeAngle);
+        // corrective strafe speed should be proportional to both the desired strafe speed as well as the desired angular speed
+        double correctiveStrafeSpeed = kP * inputStrafeSpeed * Math.abs(inputOmega);
+        double correctiveStrafeX = correctiveStrafeSpeed * Math.cos(correctiveStrafeAngle);
+        double correctiveStrafeZ = correctiveStrafeSpeed * Math.sin(correctiveStrafeAngle);
 
-            // add corrective strafe to input
-            double netStrafeX = inputStrafeX + correctiveStrafeX;
-            double netStrafeZ = inputStrafeZ + correctiveStrafeZ;
+        // add corrective strafe to input
+        double netStrafeX = inputStrafeX + correctiveStrafeX;
+        double netStrafeZ = inputStrafeZ + correctiveStrafeZ;
 
-            ChassisSpeeds correctedSpeeds = new ChassisSpeeds(netStrafeZ, netStrafeX, inputOmega);
+        ChassisSpeeds correctedSpeeds = new ChassisSpeeds(netStrafeZ, netStrafeX, inputOmega);
 
-            this.drivetrain.swerveDrive(correctedSpeeds);
-        */
+        this.drivetrain.swerveDrive(correctedSpeeds);
     }
 
     @Override

@@ -115,12 +115,12 @@ public final class Constants {
     public static final double kModuleDrive_D = 0; 
 
     // found from sysid for one of the turn modules or tune by yourself
-    public static final double kModuleTurn_P = 0.0039; // 0.01; 
+    public static final double kModuleTurn_P = 0.007; // kinda eyeballed this, had a bit of jitter 
     public static final double kModuleTurn_I = 0; 
-    public static final double kModuleTurn_D = 0.0017; 
+    public static final double kModuleTurn_D = 0.00017; 
 
     // tune by hand to correct arcing on strafe while turning
-    public static final double kCorrectiveStrafe_P = 0.0;
+    public static final double kCorrectiveStrafe_P = 0.1; // should tune this more, also look into taking a function of linear and angular speed rather than directly proportional
 
     // turn in place pid
     public static final double kTurn_P = 0; 
