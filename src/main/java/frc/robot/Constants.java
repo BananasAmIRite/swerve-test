@@ -5,15 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
-import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.lib.drive.swerve.SwerveDrivetrainConfig;
 import frc.robot.lib.drive.swerve.config.Mk4SwerveModuleConfig;
 import frc.robot.lib.leds.addressable.patterns.LEDPattern;
 import frc.robot.lib.leds.addressable.patterns.SolidLEDPattern;
-import frc.robot.trajectory.TrajectoryCreator;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -32,39 +29,37 @@ public final class Constants {
 
   public static class DrivetrainConstants {
 
-    public static final double kWheelRadiusInches = 3; 
+    public static final double kWheelRadiusInches = 1.5; 
 
     public static Mk4SwerveModuleConfig kFrontLeftConfig = new Mk4SwerveModuleConfig(
       kWheelRadiusInches, 
-      0, 1, 0
+      2, 9, 10
     ); 
     public static Mk4SwerveModuleConfig kFrontRightConfig = new Mk4SwerveModuleConfig(
       kWheelRadiusInches, 
-      2, 3, 2
+      4, 3, 11
     ); 
     public static Mk4SwerveModuleConfig kBackLeftConfig = new Mk4SwerveModuleConfig(
       kWheelRadiusInches, 
-      4, 5, 4
+      7, 8, 13
     ); 
     public static Mk4SwerveModuleConfig kBackRightConfig = new Mk4SwerveModuleConfig(
       kWheelRadiusInches, 
-      6, 7, 6
+      6, 5, 12
     );
 
     // Drivebase
-    public static final double kTrackWidthMeters = 0.75; 
-    public static final double kWheelBaseMeters = 1.0; 
+    public static final double kTrackWidthMeters = Units.inchesToMeters(17.5); 
+    public static final double kWheelBaseMeters = Units.inchesToMeters(17.5); 
 
     public static SwerveDrivetrainConfig kDrivetrainConfig = new SwerveDrivetrainConfig(kTrackWidthMeters, kWheelBaseMeters);
 
     // Kinematics
-    public static final SwerveDriveKinematics kDriveKinematics;
     static {
       kDrivetrainConfig.addSwerveModule(new Translation2d(kTrackWidthMeters / 2, kWheelBaseMeters / 2), kFrontLeftConfig); 
       kDrivetrainConfig.addSwerveModule(new Translation2d(kTrackWidthMeters / 2, -kWheelBaseMeters / 2), kFrontRightConfig); 
       kDrivetrainConfig.addSwerveModule(new Translation2d(-kTrackWidthMeters / 2, kWheelBaseMeters / 2), kBackLeftConfig); 
       kDrivetrainConfig.addSwerveModule(new Translation2d(-kTrackWidthMeters / 2, -kWheelBaseMeters / 2), kBackRightConfig);
-      kDriveKinematics = kDrivetrainConfig.getKinematics();
     }
 
 
@@ -107,9 +102,9 @@ public final class Constants {
 
     // TODO: determine where these should go, will probably just be put into module config
     // found from sysid for one of the turn modules or tune by yourself
-    public static final double kModuleTurn_P = 0; 
+    public static final double kModuleTurn_P = 0.0039; 
     public static final double kModuleTurn_I = 0; 
-    public static final double kModuleTurn_D = 0; 
+    public static final double kModuleTurn_D = 0.0017; 
 
     // TODO: determine where these should go
     // turn in place pid
@@ -136,7 +131,7 @@ public final class Constants {
 
     public static final double kMaxCentripetalAcceleration = 0.8; 
 
-    public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(DrivetrainConstants.kDriveKinematics, new SwerveDriveKinematicsConstraint(DrivetrainConstants.kDriveKinematics, DrivetrainConstants.kDrivetrainConfig.getMaxDriveSpeed()), new CentripetalAccelerationConstraint(kMaxCentripetalAcceleration)); 
+    // public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(DrivetrainConstants.kDriveKinematics, new SwerveDriveKinematicsConstraint(DrivetrainConstants.kDriveKinematics, DrivetrainConstants.kDrivetrainConfig.getMaxDriveSpeed()), new CentripetalAccelerationConstraint(kMaxCentripetalAcceleration)); 
   }
 
   public static class LEDs {

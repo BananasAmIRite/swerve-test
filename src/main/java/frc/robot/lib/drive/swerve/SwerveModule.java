@@ -2,7 +2,6 @@ package frc.robot.lib.drive.swerve;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -75,11 +74,6 @@ public class SwerveModule {
     }
 
     private void configureEncoders() {
-        this.steerEncoder.getEncoder().setPositionConversionFactor(config.getSteerPositionConversion());
-        this.steerEncoder.getEncoder().setVelocityConversionFactor(config.getSteerVelocityConversion());
-
-        this.steerEncoder.setPosition(this.absoluteSteerEncoder.getAbsolutePosition()); 
-        
         this.driveEncoder.getEncoder().setPositionConversionFactor(config.getPositionConversion());
         this.driveEncoder.getEncoder().setVelocityConversionFactor(config.getVelocityConversion());
     }
@@ -90,7 +84,7 @@ public class SwerveModule {
             Constants.DrivetrainConstants.kModuleTurn_P, 
             Constants.DrivetrainConstants.kModuleTurn_I, 
             Constants.DrivetrainConstants.kModuleTurn_D
-            );
+        );
         
         this.drivePIDController.setP(Constants.DrivetrainConstants.kModuleDrive_P);
         this.drivePIDController.setI(Constants.DrivetrainConstants.kModuleDrive_I); 
@@ -126,15 +120,19 @@ public class SwerveModule {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(this.driveEncoder.getPosition()); 
+        return Rotation2d.fromDegrees(this.absoluteSteerEncoder.getAbsolutePosition()); 
     }
 
-    public SwerveModuleState getCurrentState() {
-        return new SwerveModuleState(this.driveEncoder.getEncoder().getVelocity(), Rotation2d.fromDegrees(this.driveEncoder.getPosition()));
+    public double getAngularVelocity() {
+        return this.absoluteSteerEncoder.getVelocity(); 
+    }
+
+    public SecondOrderSwerveModuleState getCurrentState() {
+        return new SecondOrderSwerveModuleState(this.driveEncoder.getEncoder().getVelocity(), getAngle(), getAngularVelocity());
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(this.driveEncoder.getPosition(), Rotation2d.fromDegrees(this.driveEncoder.getPosition())); 
+        return new SwerveModulePosition(this.driveEncoder.getPosition(), getAngle()); 
     }
 
     public SwerveModuleState getReferenceState() {

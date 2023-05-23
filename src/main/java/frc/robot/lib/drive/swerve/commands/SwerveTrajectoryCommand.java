@@ -3,27 +3,18 @@ package frc.robot.lib.drive.swerve.commands;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.lib.drive.DriveCommand;
 import frc.robot.lib.drive.DriveSignal;
 import frc.robot.lib.drive.swerve.SwerveDrivetrain;
-import frc.robot.subsystems.drivetrain.Drivetrain;
 
+// TODO: retire this in favor of pathplanner
 public class SwerveTrajectoryCommand extends DriveCommand
 {
     private final SwerveDrivetrain subsystem;
@@ -81,7 +72,7 @@ public class SwerveTrajectoryCommand extends DriveCommand
 
         Trajectory.State initialState = this.trajectory.sample(0);
         
-        prevSpeeds = Constants.DrivetrainConstants.kDriveKinematics.toSwerveModuleStates(
+        prevSpeeds = subsystem.getKinematics().toSwerveModuleStates(
                 new ChassisSpeeds(
                         initialState.velocityMetersPerSecond,
                         0,

@@ -16,8 +16,6 @@ public class SwerveDrivetrainConfig extends DrivetrainConfig {
 
     private final List<SwerveModuleLocation> locations = new ArrayList<>();
 
-    private SwerveDriveKinematics kinematics;
-
     private double maxModuleSpeed = 0; 
 
     public SwerveDrivetrainConfig(double trackWidth, double driveBase) {
@@ -25,13 +23,13 @@ public class SwerveDrivetrainConfig extends DrivetrainConfig {
         this.wheelBase = driveBase;
     }
 
-    public void addSwerveModule(Translation2d translation, SwerveModuleConfig config) {
+    public SwerveDrivetrainConfig addSwerveModule(Translation2d translation, SwerveModuleConfig config) {
         this.locations.add(new SwerveModuleLocation(translation, config));
         this.maxModuleSpeed = Collections.min(locations, (a, b) -> (int) (a.config.getMaxAttainableSpeed() - b.config.getMaxAttainableSpeed())).config.getMaxAttainableSpeed();
-        this.kinematics = generateKinematics();
+        return this; 
     }
 
-    private SwerveDriveKinematics generateKinematics() {
+    private Translation2d[] getTranslationsArray() {
         List<Translation2d> moduleTranslations = getModuleTranslations();
 
         Translation2d[] translations = new Translation2d[moduleTranslations.size()];
@@ -39,8 +37,20 @@ public class SwerveDrivetrainConfig extends DrivetrainConfig {
         for (int i = 0; i < moduleTranslations.size(); i++) {
             translations[i] = moduleTranslations.get(i);
         }
+        return translations; 
+    }
 
-        return new SwerveDriveKinematics(translations);
+    public SwerveDriveKinematics generateFirstOrderKinematics() {
+        if (getModuleTranslations().size() < 2) return null; 
+
+        return new SwerveDriveKinematics(getTranslationsArray());
+    }
+
+    
+    public SecondOrderSwerveKinematics generateSecondOrderKinematics() {
+        if (getModuleTranslations().size() < 2) return null; 
+
+        return new SecondOrderSwerveKinematics(getTranslationsArray());
     }
 
     @Override
@@ -60,10 +70,6 @@ public class SwerveDrivetrainConfig extends DrivetrainConfig {
     @Override
     public double getMaxDriveSpeed() {
         return getMaxModuleSpeed(); 
-    }
-
-    public SwerveDriveKinematics getKinematics() {
-        return this.kinematics; 
     }
 
     public List<SwerveModuleConfig> getModuleConfigs() {

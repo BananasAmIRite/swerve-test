@@ -49,10 +49,13 @@ public class SwerveTeleopCommand extends DriveCommand {
         double throttleForward = -controller.getLeftStickY();
         double throttleStrafe = -controller.getLeftStickX();
         double throttleTurn = -controller.getRightStickX();
+        
 
         double speedForward = ControllerUtils.squareKeepSign(throttleForward) * maxSpeed;
         double speedStrafe = ControllerUtils.squareKeepSign(throttleStrafe) * maxSpeed;
         double speedTurn = ControllerUtils.squareKeepSign(throttleTurn) * maxRotation;
+
+        System.out.println(speedForward + " " + speedStrafe + " " + speedTurn);
 
         ChassisSpeeds speeds = new ChassisSpeeds(
             speedForward, 

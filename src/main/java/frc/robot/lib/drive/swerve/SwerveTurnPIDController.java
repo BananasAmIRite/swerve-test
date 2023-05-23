@@ -2,6 +2,7 @@ package frc.robot.lib.drive.swerve;
 
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.math.MathUtil;
 import frc.robot.lib.controllers.pid.WPIPIDController;
 
 public class SwerveTurnPIDController extends WPIPIDController {
@@ -14,13 +15,12 @@ public class SwerveTurnPIDController extends WPIPIDController {
         super(p, i, d, () -> encoder.getAbsolutePosition());
         this.encoder = encoder; 
 
-
         enableContinuousInput(0, 360);
     }
 
     public double calculate() {
         // TODO: clamp this
-        return calculate(encoder.getAbsolutePosition()); 
+        return MathUtil.clamp(calculate(encoder.getAbsolutePosition()), minOutput, maxOutput); 
     }
 
     public void setMaxOutput(double maxOutput) {
