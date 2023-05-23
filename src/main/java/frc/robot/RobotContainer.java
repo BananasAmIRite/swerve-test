@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.SwerveTunerCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.commands.CorrectiveStrafingTeleopDrive;
 import frc.robot.subsystems.leds.addressable.LED;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 import frc.robot.util.DriverController;
@@ -63,13 +64,17 @@ public class RobotContainer {
     Pose2d res = rel2; 
     System.out.println(res);
     // driverController.setChassisSpeedsSupplier(drivetrain::getChassisSpeeds); // comment in simulation
-    drivetrain.setDefaultCommand(new RunCommand(() -> {
-      ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 
-      SmartDashboard.putNumber("x", speeds.vxMetersPerSecond); 
-      SmartDashboard.putNumber("y", speeds.vyMetersPerSecond); 
-      SmartDashboard.putNumber("rotation", speeds.omegaRadiansPerSecond); 
-      drivetrain.swerveDrive(speeds);
-    }, drivetrain));
+    
+    // uncorrected teleop drive
+    // drivetrain.setDefaultCommand(new RunCommand(() -> {
+    //   ChassisSpeeds speeds = driverController.getDesiredChassisSpeeds(); 
+    //   SmartDashboard.putNumber("x", speeds.vxMetersPerSecond); 
+    //   SmartDashboard.putNumber("y", speeds.vyMetersPerSecond); 
+    //   SmartDashboard.putNumber("rotation", speeds.omegaRadiansPerSecond); 
+    //   drivetrain.swerveDrive(speeds);
+    // }, drivetrain));
+
+    drivetrain.setDefaultCommand(new CorrectiveStrafingTeleopDrive(driverController, drivetrain));
 
     patterns.addOption("Idle", Constants.LEDs.Patterns.kIdle);
     patterns.addOption("Rainbow", Constants.LEDs.Patterns.kBalanceFinished);
