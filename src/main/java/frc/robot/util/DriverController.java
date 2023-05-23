@@ -61,9 +61,9 @@ public class DriverController extends Controller {
         double throttleStrafe = -getLeftStickX();
         double throttleTurn = -getRightStickX(); 
         
-        double speedForward = ControllerUtils.squareKeepSign(throttleForward) * maxSpeed.get(); 
-        double speedStrafe = ControllerUtils.squareKeepSign(throttleStrafe) * maxSpeed.get(); 
-        double speedTurn = ControllerUtils.squareKeepSign(throttleTurn) * maxRotation.get(); 
+        double speedForward = ControllerUtils.squareKeepSign(throttleForward) * getMaxSpeed(); 
+        double speedStrafe = ControllerUtils.squareKeepSign(throttleStrafe) * getMaxSpeed(); 
+        double speedTurn = ControllerUtils.squareKeepSign(throttleTurn) * getMaxRotation(); 
 
         // TODO: add in rate limiters
         // ChassisSpeeds speeds = new ChassisSpeeds(
@@ -93,6 +93,14 @@ public class DriverController extends Controller {
 
     public void setChassisSpeedsSupplier(Supplier<ChassisSpeeds> s) {
         this.chassisSpeedsSupplier = s; 
+    }
+
+    public double getMaxSpeed(){
+        return this.maxSpeed.get();
+    }
+
+    public double getMaxRotation(){
+        return this.maxRotation.get();
     }
 
     public void setMaxSpeedSupplier(Supplier<Double> maxSpeed) {

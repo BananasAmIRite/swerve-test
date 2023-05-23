@@ -119,6 +119,9 @@ public final class Constants {
     public static final double kModuleTurn_I = 0; 
     public static final double kModuleTurn_D = 0.0017; 
 
+    // tune by hand to correct arcing on strafe while turning
+    public static final double kCorrectiveStrafe_P = 0.0;
+
     // turn in place pid
     public static final double kTurn_P = 0; 
     public static final double kTurn_I = 0; 
