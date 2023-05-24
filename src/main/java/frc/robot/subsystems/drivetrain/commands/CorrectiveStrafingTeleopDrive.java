@@ -1,9 +1,11 @@
 package frc.robot.subsystems.drivetrain.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.ControllerUtils;
 import frc.robot.util.DriverController;
 import frc.robot.util.ControllerUtils;
 
@@ -14,6 +16,8 @@ public class CorrectiveStrafingTeleopDrive extends CommandBase {
     public CorrectiveStrafingTeleopDrive(DriverController controller, Drivetrain drivetrain){
         this.controller = controller;
         this.drivetrain = drivetrain;
+
+        SmartDashboard.putNumber("corrective kP", SmartDashboard.getNumber("corrective kP", Constants.DrivetrainConstants.kCorrectiveStrafe_P));
 
         this.addRequirements(drivetrain);
     }
@@ -26,13 +30,25 @@ public class CorrectiveStrafingTeleopDrive extends CommandBase {
         double inputStrafeZ = -ControllerUtils.squareKeepSign(this.controller.getLeftStickY()) * this.controller.getMaxSpeed(); // vertical
         double inputStrafeSpeed = Math.sqrt(inputStrafeX * inputStrafeX + inputStrafeZ * inputStrafeZ);
 
+        if(inputOmega == 0 || inputStrafeSpeed == 0){
+            this.drivetrain.swerveDrive(new ChassisSpeeds(inputStrafeZ, inputStrafeX, inputOmega));
+            return;
+        }
+
         // calculate the angle of input strafe, rotate 90 degrees in opposite direction of turn
         double inputStrafeAngle = Math.atan2(inputStrafeZ, inputStrafeX);
         // TODO: plus or minus 90 degrees?
-        double correctiveStrafeAngle = inputStrafeAngle - 0.5 * Math.PI * Math.signum(inputOmega);
+        double correctiveStrafeAngle = inputStrafeAngle + 0.5 * Math.PI * Math.signum(inputOmega);
+
+        SmartDashboard.putNumber("input-strafe-speed", inputStrafeSpeed);
+        SmartDashboard.putNumber("input-omega", inputOmega);
+        SmartDashboard.putNumber("input-strafe-angle", inputStrafeAngle);
+        SmartDashboard.putNumber("corrective-strafe-angle", correctiveStrafeAngle);
+
+        double kP = SmartDashboard.getNumber("corrective kP", 0);
 
         // corrective strafe speed should be proportional to both the desired strafe speed as well as the desired angular speed
-        double correctiveStrafeSpeed = Constants.DrivetrainConstants.kCorrectiveStrafe_P * inputStrafeSpeed * Math.abs(inputOmega);
+        double correctiveStrafeSpeed = kP * inputStrafeSpeed * Math.abs(inputOmega);
         double correctiveStrafeX = correctiveStrafeSpeed * Math.cos(correctiveStrafeAngle);
         double correctiveStrafeZ = correctiveStrafeSpeed * Math.sin(correctiveStrafeAngle);
 
