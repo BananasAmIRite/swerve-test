@@ -39,7 +39,9 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     this.odometry.update(gyro.getRotation2d(), getPositions()); 
-    SmartDashboard.putNumber("gyro angle", this.gyro.getRotation2d().getDegrees()); 
+    SmartDashboard.putNumber("odo angle", odometry.getEstimatedPosition().getRotation().getDegrees());
+    SmartDashboard.putNumber("odo x", odometry.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("odo y", odometry.getEstimatedPosition().getY()); 
 
     try {
     SmartDashboard.putNumber("FL target speed", frontLeft.getReferenceState().speedMetersPerSecond); 

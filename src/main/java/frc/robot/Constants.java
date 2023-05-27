@@ -91,9 +91,9 @@ public final class Constants {
     Math.hypot(kTrackWidthMeters / 2.0, kWheelBaseMeters / 2.0); // max rotation of robot
     
     // TODO: tune these
-    public static final double kMaxSpeedMetersPerSecond = 1.0; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
+    public static final double kMaxSpeedMetersPerSecond = 1.3; // max velocity (no turning) of robot; may tune to be a fraction of the attainable module speed
     public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 1.0; // max acceleration of robot (accelerate to max speed in 1 second)
-    public static final double kMaxRotationRadPerSecond = Math.PI; 
+    public static final double kMaxRotationRadPerSecond = 2.5; 
     public static final double kMaxRotationAccelerationRadPerSecondSquared = Math.PI; // max angular acceleration of robot
 
 
@@ -120,7 +120,7 @@ public final class Constants {
     public static final double kModuleTurn_D = 0.00017; 
 
     // tune by hand to correct arcing on strafe while turning
-    public static final double kCorrectiveStrafe_P = 0.1; // should tune this more, also look into taking a function of linear and angular speed rather than directly proportional
+    public static final double kCorrectiveStrafe_P = 0.115; // should tune this more, also look into taking a function of linear and angular speed rather than directly proportional
 
     // turn in place pid
     public static final double kTurn_P = 0; 
